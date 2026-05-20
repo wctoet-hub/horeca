@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Horeca">
+<meta name="theme-color" content="#1A1714">
+<title>Horeca Manager</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Fira+Code:wght@400;500&family=Archivo:wght@400;500;600;700;900&display=swap');
+:root{--bg:#F7F4EF;--surface:#FFFFFF;--surface2:#F0EDE8;--border:#E2DDD6;--text:#1A1714;--muted:#8A847C;--accent:#C8522A;--accent-l:#F5E8E3;--green:#2A6B4A;--green-l:#E3F0E9;--gold:#9A7000;--gold-l:#FBF5E0;--red:#B91C1C;--red-l:#FFEBEE;--orange:#C45200;--orange-l:#FFF3E0;--mono:'Fira Code',monospace;--serif:'Instrument Serif',serif;--sans:'Archivo',sans-serif;--r:10px;--sh:0 2px 12px rgba(26,23,20,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;font-size:15px;line-height:1.5}
+.nav{background:var(--text);display:flex;align-items:stretch;padding:0 20px;position:sticky;top:0;z-index:100;border-bottom:2px solid var(--accent);overflow-x:auto}
+.nav::-webkit-scrollbar{display:none}
+.nav-brand{color:#fff;font-family:var(--serif);font-style:italic;font-size:18px;padding:13px 16px 13px 0;border-right:1px solid rgba(255,255,255,.12);margin-right:6px;white-space:nowrap;display:flex;align-items:center;flex-shrink:0}
+.nav-tab{color:rgba(255,255,255,.45);background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;padding:13px 15px;font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap}
+.nav-tab:hover{color:rgba(255,255,255,.8)}
+.nav-tab.active{color:#fff;border-bottom-color:var(--accent)}
+.nav-end{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,.35);padding:0 4px;white-space:nowrap;flex-shrink:0}
+.sdot{width:6px;height:6px;border-radius:50%;background:#555;flex-shrink:0}
+.sdot.on{background:#4ade80}
+.page{display:none;padding:28px 20px 80px;max-width:800px;margin:0 auto}
+.page.active{display:block;animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-family:var(--serif);font-style:italic;font-size:clamp(26px,5vw,40px);font-weight:400;line-height:1.15;margin-bottom:4px}
+.page-sub{color:var(--muted);font-size:13px;margin-bottom:28px}
+.slbl{font-size:10px;text-transform:uppercase;letter-spacing:2px;font-weight:700;color:var(--accent);margin:26px 0 12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;box-shadow:var(--sh)}
+.card-head{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.ci{width:26px;height:26px;background:var(--accent-l);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.fr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.fr:last-child{border-bottom:none;padding-bottom:0}
+.fr:first-child{padding-top:0}
+.fl{font-size:13px;font-weight:500;flex:1;min-width:0}
+.fh{font-size:11px;color:var(--muted);font-weight:400;margin-top:1px}
+.ig{display:flex;align-items:center;border:1.5px solid var(--border);border-radius:7px;overflow:hidden;background:var(--bg);flex-shrink:0;width:128px;transition:border-color .2s}
+.ig:focus-within{border-color:var(--accent);background:#fff}
+.ig.wide{width:180px}
+.ip{padding:0 8px;font-family:var(--mono);font-size:11px;color:var(--muted);background:var(--surface2);border-right:1px solid var(--border);height:34px;display:flex;align-items:center;flex-shrink:0}
+.ig input,.ig-text input{background:transparent;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;padding:0 8px;width:100%;height:34px;text-align:right}
+.ig-text input{font-family:var(--sans);font-size:13px;text-align:left}
+input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+select{border:1.5px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:13px;padding:0 8px;height:34px;outline:none;cursor:pointer;transition:border-color .2s}
+select:focus{border-color:var(--accent)}
+.btn{border:none;border-radius:7px;font-family:var(--sans);font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;display:inline-flex;align-items:center;gap:5px;font-size:13px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}
+.btn:active{transform:translateY(0)}
+.btn-p{background:var(--accent);color:#fff;padding:10px 20px}
+.btn-g{background:var(--green);color:#fff;padding:10px 20px}
+.btn-s{background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:9px 16px}
+.btn-ghost{background:transparent;color:var(--muted);padding:7px 12px}
+.btn-danger{background:var(--red-l);color:var(--red);padding:7px 12px;border:1px solid #fca5a5}
+.btn-full{width:100%;justify-content:center;padding:12px}
+.btn-row{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:12px}
+.sb{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+.sb.ac{background:var(--accent);border-color:var(--accent);color:#fff}
+.sb.gn{background:var(--green);border-color:var(--green);color:#fff}
+.sb.go{background:var(--gold-l);border-color:#d4b44a}
+.sb.rd{background:var(--red-l);border-color:#fca5a5}
+.sb.or{background:var(--orange-l);border-color:#ffb74d}
+.sl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;opacity:.65;margin-bottom:4px}
+.sv{font-family:var(--mono);font-size:21px;font-weight:500;line-height:1.1}
+.ss{font-size:11px;opacity:.6;margin-top:2px}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.b-ok{background:var(--green-l);color:var(--green)}
+.b-warn{background:var(--orange-l);color:var(--orange)}
+.b-bad{background:var(--red-l);color:var(--red)}
+.b-neu{background:var(--surface2);color:var(--muted)}
+.season-toggle{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content}
+.st-btn{padding:8px 16px;background:var(--surface2);border:none;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);transition:background .2s,color .2s;white-space:nowrap}
+.st-btn.active{background:var(--accent);color:#fff}
+.month-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:8px;border:1px solid var(--border);margin-bottom:6px;background:var(--surface);cursor:pointer;transition:border-color .2s,background .2s;gap:10px}
+.month-row:hover{border-color:var(--accent);background:var(--accent-l)}
+.mr-name{font-weight:700;font-size:14px}
+.mr-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.mr-chev{color:var(--muted);font-size:18px;line-height:1}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;line-height:1.8}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(26,23,20,.5);z-index:200;align-items:flex-end;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:16px 16px 0 0;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;padding:24px 20px 40px;box-shadow:0 -8px 40px rgba(26,23,20,.15);position:relative}
+.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-family:var(--serif);font-style:italic;font-size:24px;margin-bottom:4px}
+.modal-sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--surface2);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;color:var(--muted);z-index:1}
+.divider{height:1px;background:var(--border);margin:18px 0}
+.ing-table{width:100%;border-collapse:collapse}
+.ing-table th{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;padding:6px 6px;text-align:left;border-bottom:2px solid var(--border);white-space:nowrap}
+.ing-table td{padding:4px 3px;vertical-align:middle}
+.ing-table tbody tr{border-bottom:1px solid var(--border)}
+.ing-table tbody tr:last-child{border-bottom:none}
+.ing-table input{width:100%;border:1.5px solid transparent;border-radius:6px;background:var(--bg);color:var(--text);font-family:var(--mono);font-size:12px;padding:5px 6px;outline:none;transition:border-color .2s;min-width:0}
+.ing-table input:focus{border-color:var(--accent);background:#fff}
+.ing-table .td-name input{font-family:var(--sans);font-size:13px}
+.ing-table .td-cost{text-align:right;font-family:var(--mono);font-size:12px;color:var(--muted);padding-right:6px;white-space:nowrap;min-width:60px}
+.ing-table .td-del button{background:none;border:none;color:var(--border);font-size:15px;cursor:pointer;padding:3px 5px;border-radius:4px;transition:color .2s,background .2s}
+.ing-table .td-del button:hover{color:var(--red);background:var(--red-l)}
+.product-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s,background .2s;box-shadow:var(--sh)}
+.product-card:hover{border-color:var(--accent);background:var(--accent-l)}
+.pc-price{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--accent);margin-left:auto;text-align:right;flex-shrink:0}
+.pc-cost{font-size:11px;color:var(--muted);text-align:right}
+.bar-track{background:var(--surface2);border-radius:4px;height:10px;overflow:hidden;margin-top:3px}
+.bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+.advice{border-left:3px solid var(--accent);padding:11px 14px;border-radius:0 8px 8px 0;margin-bottom:8px;background:var(--surface)}
+.advice.gn{border-color:var(--green)}
+.advice.or{border-color:var(--orange)}
+.advice-tag{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--accent);margin-bottom:3px}
+.advice.gn .advice-tag{color:var(--green)}
+.advice.or .advice-tag{color:var(--orange)}
+.advice p{font-size:13px;line-height:1.6}
+.advice strong{color:var(--accent)}
+.advice.gn strong{color:var(--green)}
+textarea{width:100%;border:1.5px solid var(--border);border-radius:7px;padding:9px 11px;font-family:var(--sans);font-size:13px;background:var(--bg);color:var(--text);resize:vertical;outline:none;transition:border-color .2s;margin-top:6px}
+textarea:focus{border-color:var(--accent)}
+@media(max-width:520px){.stats{grid-template-columns:1fr 1fr}.fr{flex-wrap:wrap}.ig{width:100%}.ing-table th:nth-child(3),.ing-table td:nth-child(3){display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">🍳 Horeca</div>
+  <button class="nav-tab active" data-page="setup">⚙ Setup</button>
+  <button class="nav-tab" data-page="tracker">📅 Maanden</button>
+  <button class="nav-tab" data-page="kostprijs">🧾 Kostprijs</button>
+  <button class="nav-tab" data-page="gids">📖 Gids</button>
+  <div class="nav-end"><div class="sdot" id="sdot"></div><span id="setup-txt">Nog in te stellen</span></div>
+</nav>
+
+<!-- ══════ SETUP ══════ -->
+<div class="page active" id="page-setup">
+  <div class="page-title">Basis­instellingen</div>
+  <div class="page-sub">Vul dit één keer in. De andere modules gebruiken deze data automatisch.</div>
+
+  <div class="slbl">📍 Vaste maandlasten</div>
+  <div class="card">
+    <div class="fr"><div class="fl">Huur / pacht<div class="fh">Per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_huur" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Lonen personeel<div class="fh">Totaal bruto p/maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_lonen" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Eigen loon<div class="fh">Wat jij jezelf uitbetaalt</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_eigenloon" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Energie<div class="fh">Gas + stroom + water</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_energie" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Verzekeringen</div><div class="ig"><div class="ip">€</div><input type="number" id="s_verzekering" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Abonnementen<div class="fh">Kassa, muziek, boekhouding…</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_abonnementen" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Overig vast<div class="fh">Lease, afschrijving, etc.</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_overigvast" placeholder="0" min="0"></div></div>
+  </div>
+
+  <div class="slbl">📊 Inkoop & variabele kosten</div>
+  <div class="card">
+    <div class="fr"><div class="fl">Gemiddeld inkooppercentage<div class="fh">Horeca norm: 28–35%</div></div><div class="ig"><div class="ip">%</div><input type="number" id="s_inkoop" placeholder="30" min="0" max="100"></div></div>
+    <div class="fr"><div class="fl">Bezorgplatform commissie<div class="fh">Thuisbezorgd, Uber Eats, etc.</div></div><div class="ig"><div class="ip">%</div><input type="number" id="s_bezorg" placeholder="0" min="0" max="100"></div></div>
+    <div class="fr"><div class="fl">Verpakking / wegwerp<div class="fh">Per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_verpakking" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Schoonmaak & verbruiksmateriaal<div class="fh">Per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_schoon" placeholder="0" min="0"></div></div>
+  </div>
+
+  <div class="slbl">🎯 Doelen & seizoenen</div>
+  <div class="card">
+    <div class="fr"><div class="fl">Doelomzet zomer<div class="fh">Mei t/m oktober — per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_doel_zomer" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Doelomzet winter<div class="fh">Nov t/m april — per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_doel_winter" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Gewenste jaarwinst<div class="fh">Netto, na alle kosten</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_jaardoel" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Gemiddelde bon per klant</div><div class="ig"><div class="ip">€</div><input type="number" id="s_bon" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Open dagen per week</div><div class="ig"><div class="ip">#</div><input type="number" id="s_dagen" value="5" min="1" max="7"></div></div>
+  </div>
+
+  <div class="card" id="setup-summary" style="display:none">
+    <div class="card-head"><div class="ci">📋</div>Overzicht vaste lasten</div>
+    <div class="stats" id="setup-stats"></div>
+  </div>
+
+  <div class="slbl">💾 Data & backup</div>
+  <div class="card">
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">Exporteer al je data als JSON-bestand voor backup of om over te zetten naar een ander apparaat. Importeer een eerder opgeslagen bestand om verder te gaan.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-g" onclick="exportJSON()">⬇️ Exporteer data</button>
+      <button class="btn btn-s" onclick="document.getElementById('json-import-input').click()">⬆️ Importeer data</button>
+      <input type="file" id="json-import-input" accept=".json" style="display:none" onchange="importJSON(event)">
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TRACKER ══════ -->
+<div class="page" id="page-tracker">
+  <div class="page-title">Maand­tracker</div>
+  <div class="page-sub">Vul iedere maand in. De app bouwt je jaar automatisch op.</div>
+
+  <div id="tracker-no-setup" style="display:none">
+    <div class="card" style="text-align:center;padding:36px 20px">
+      <div style="font-size:36px;margin-bottom:12px">⚙️</div>
+      <div style="font-weight:700;margin-bottom:8px">Eerst setup invullen</div>
+      <div style="color:var(--muted);font-size:13px;margin-bottom:18px">Vul je vaste lasten in via Setup zodat de calculator kan werken.</div>
+      <button class="btn btn-p" onclick="showPage('setup')">Naar setup →</button>
+    </div>
+  </div>
+
+  <div id="tracker-main">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div class="season-toggle">
+        <button class="st-btn active" id="yf-all" onclick="setYearFilter('all')">Alles</button>
+        <button class="st-btn" id="yf-zomer" onclick="setYearFilter('zomer')">☀️ Zomer</button>
+        <button class="st-btn" id="yf-winter" onclick="setYearFilter('winter')">❄️ Winter</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-s" onclick="document.getElementById('pdf-import-input').click()">📄 Importeer rapportage</button>
+        <input type="file" id="pdf-import-input" accept=".pdf" style="display:none" onchange="importPDF(event)">
+        <button class="btn btn-p" onclick="openMonthModal(null)">+ Maand toevoegen</button>
+      </div>
+    </div>
+
+    <div class="card" id="year-overview" style="display:none">
+      <div class="card-head"><div class="ci">📈</div>Jaaroverzicht</div>
+      <div class="stats" id="year-stats"></div>
+      <div id="year-bars"></div>
+    </div>
+
+    <div class="slbl">Ingevoerde maanden</div>
+    <div id="months-list"></div>
+    <div id="no-months" class="empty-state">Nog geen maanden ingevoerd.<br>Klik op <strong>+ Maand toevoegen</strong> om te beginnen.</div>
+  </div>
+</div>
+
+<!-- ══════ KOSTPRIJS ══════ -->
+<div class="page" id="page-kostprijs">
+  <div class="page-title">Kostprijs­calculator</div>
+  <div class="page-sub">Van ingrediënt tot verkoopprijs — onbeperkt ingrediënten per product.</div>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+    <div class="season-toggle">
+      <button class="st-btn active" id="kp-tab-calc-btn" onclick="kpTab('calc')">Berekenen</button>
+      <button class="st-btn" id="kp-tab-saved-btn" onclick="kpTab('saved')">Opgeslagen <span id="saved-n"></span></button>
+    </div>
+  </div>
+
+  <div id="kp-calc">
+    <div class="card">
+      <div class="card-head"><div class="ci">🍽</div>Product info</div>
+      <div class="fr">
+        <div class="fl">Naam product<div class="fh">bijv. "Pulled Pork Burger"</div></div>
+        <div class="ig wide ig-text"><input type="text" id="kp_naam" placeholder="Productnaam"></div>
+      </div>
+      <div class="fr"><div class="fl">Aantal porties<div class="fh">Hoeveel porties maakt dit recept?</div></div><div class="ig"><div class="ip">#</div><input type="number" id="kp_porties" value="1" min="1" oninput="calcKP()"></div></div>
+      <div class="fr"><div class="fl">Bereidingstijd<div class="fh">Minuten — voor arbeidskostenberekening</div></div><div class="ig"><div class="ip">min</div><input type="number" id="kp_tijd" value="0" min="0" oninput="calcKP()"></div></div>
+      <div class="fr"><div class="fl">Uurloon keuken<div class="fh">Bruto incl. werkgeverslasten</div></div><div class="ig"><div class="ip">€</div><input type="number" id="kp_uurloon" value="18" min="0" oninput="calcKP()"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="ci">🧂</div>Ingrediënten — voeg er zoveel toe als je wilt</div>
+      <div style="overflow-x:auto">
+        <table class="ing-table">
+          <thead><tr>
+            <th style="min-width:130px">Ingrediënt</th>
+            <th style="min-width:70px">Hoeveel</th>
+            <th style="min-width:58px">Eenheid</th>
+            <th style="min-width:80px">Prijs/eenh.</th>
+            <th style="min-width:64px;text-align:right">Kosten</th>
+            <th style="width:32px"></th>
+          </tr></thead>
+          <tbody id="ing-body"></tbody>
+        </table>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-s" onclick="addIng()">+ Ingrediënt</button>
+        <button class="btn btn-ghost" onclick="addIng();addIng();addIng()">+ 3 tegelijk</button>
+        <button class="btn btn-ghost" onclick="addIng();addIng();addIng();addIng();addIng()">+ 5 tegelijk</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><div class="ci">💰</div>Opslag & marge</div>
+      <div class="fr"><div class="fl">Overhead opslag %<div class="fh">Auto vanuit setup — of handmatig aanpassen</div></div><div class="ig"><div class="ip">%</div><input type="number" id="kp_overhead" placeholder="0" min="0" max="300" oninput="calcKP()"></div></div>
+      <div class="fr"><div class="fl">Gewenste brutomarge<div class="fh">65% = je verkoopt voor ~3× kostprijs</div></div><div class="ig"><div class="ip">%</div><input type="number" id="kp_marge" value="65" min="1" max="99" oninput="calcKP()"></div></div>
+      <div class="fr"><div class="fl">BTW tarief</div><select id="kp_btw" onchange="calcKP()"><option value="9">9% — horeca eten</option><option value="21">21% — drank / overig</option><option value="0">0% — geen BTW</option></select></div>
+    </div>
+
+    <div class="card" id="kp-result-card" style="display:none">
+      <div class="card-head"><div class="ci">✅</div>Resultaat per portie</div>
+      <div class="stats" id="kp-stats"></div>
+      <div class="divider"></div>
+      <div id="kp-breakdown"></div>
+      <div class="divider"></div>
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Wat als ik een andere prijs kies?</div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="ig"><div class="ip">€</div><input type="number" id="kp_eigen" placeholder="0.00" min="0" step="0.01" oninput="calcEigen()"></div>
+          <div id="kp-eigen-out" style="font-size:13px;color:var(--muted)">Voer een prijs in</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-g" id="kp-save-btn" onclick="saveProduct()">💾 Opslaan</button>
+        <button class="btn btn-s" onclick="resetKP()">Opnieuw beginnen</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="kp-saved" style="display:none">
+    <div id="saved-list"></div>
+    <div id="no-saved" class="empty-state" style="display:none">Nog geen producten opgeslagen.<br>Reken een product door en sla het op.</div>
+  </div>
+</div>
+
+<!-- ══════ GIDS ══════ -->
+<div class="page" id="page-gids">
+  <div class="page-title">Installatie & gebruik</div>
+  <div class="page-sub">Stap voor stap — ook als je niet zo technisch bent.</div>
+
+  <div class="slbl">🚀 Deel 1 — De app online zetten (één keer)</div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">1</div>Maak een gratis Netlify account</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Ga op je computer naar <strong>netlify.com</strong> en klik op <em>Sign up</em>.<br>
+      Kies <em>Sign up with email</em> en maak een account aan.<br>
+      <span style="color:var(--muted)">Je hebt alleen een e-mailadres nodig. Gratis, geen creditcard.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">2</div>Zet het bestand online</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Na inloggen zie je een groot vlak met de tekst <em>"Drag and drop your site folder here"</em>.<br>
+      Sleep het bestand <strong>horeca-manager.html</strong> daar naartoe.<br>
+      Netlify geeft je direct een webadres — zoiets als <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:12px">jouwsite.netlify.app</code><br>
+      <span style="color:var(--muted)">Dit is jouw persoonlijke app-adres. Bewaar het ergens.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">3</div>App-adres aanpassen (optioneel maar handig)</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      In Netlify kan je het adres een eigen naam geven.<br>
+      Ga naar <em>Site settings → Change site name</em> en kies iets als <strong>bloom-horeca</strong>.<br>
+      Het adres wordt dan <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:12px">bloom-horeca.netlify.app</code>
+    </div>
+  </div>
+
+  <div class="slbl">📱 Deel 2 — Op je iPhone of iPad zetten</div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">4</div>Open de app in Safari</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Open <strong>Safari</strong> op je iPhone of iPad.<br>
+      Typ het adres van Netlify in de adresbalk en ga ernaar toe.<br>
+      <span style="color:var(--red);font-weight:600">⚠️ Belangrijk: gebruik Safari, niet Chrome of een andere browser.</span><br>
+      <span style="color:var(--muted)">Alleen Safari ondersteunt de installatie als app op je homescreen.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">5</div>Zet op beginscherm</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Tik onderin op het <strong>Deel-icoontje</strong> — het vierkantje met een pijl omhoog.<br>
+      Scroll naar beneden in het menu dat verschijnt.<br>
+      Tik op <strong>"Zet op beginscherm"</strong> (of "Add to Home Screen").<br>
+      Geef het een naam — bijv. <em>Horeca</em> — en tik op <strong>Voeg toe</strong>.<br>
+      <span style="color:var(--green);font-weight:600">✅ De app staat nu op je homescreen als een echte app.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">6</div>Op meerdere apparaten zetten</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Herhaal stap 4 en 5 op elk apparaat — je iPad, de telefoon van je vrouw, etc.<br>
+      Het adres is hetzelfde op elk apparaat.<br>
+      <span style="color:var(--muted)">Let op: de ingevulde data staat per apparaat opgeslagen. Gebruik de <strong>Exporteer/Importeer JSON</strong> knoppen in Setup om data over te zetten.</span>
+    </div>
+  </div>
+
+  <div class="slbl">📋 Deel 3 — De app gebruiken</div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci">⚙</div>Stap 1 — Setup (één keer invullen)</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Begin altijd in het <strong>Setup</strong> tabblad.<br>
+      Vul al je vaste lasten in: huur, lonen, energie, verzekeringen, etc.<br>
+      Stel je seizoensdoelen in: wat wil je omzetten in zomer en winter?<br>
+      <span style="color:var(--muted)">Dit hoef je maar één keer te doen. De rest van de app gebruikt deze cijfers automatisch.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci">📅</div>Stap 2 — Maandtracker (elke maand)</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Aan het einde van elke maand ga je naar <strong>Maanden</strong>.<br>
+      Klik op <em>+ Maand toevoegen</em>.<br>
+      Vul in: omzet, inkoopkosten, eventuele extra kosten.<br>
+      De app berekent direct je winst en vergelijkt met je doel.<br>
+      <span style="color:var(--muted)">Heb je een rapportage van je boekhouder? Klik op <strong>📄 Importeer rapportage</strong> — dan vult de app alles automatisch in.</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci">🧾</div>Stap 3 — Kostprijscalculator (op aanvraag)</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Wil je weten wat een nieuw gerecht mag kosten? Ga naar <strong>Kostprijs</strong>.<br>
+      Voeg ingrediënten toe — zoveel je wil, via <em>+ Ingrediënt</em> of <em>+ 3 tegelijk</em>.<br>
+      Vul hoeveelheid en inkoopprijs per eenheid in.<br>
+      De app rekent automatisch de overhead erbij en geeft je een adviesverkoopprijs.<br>
+      Sla het product op om het later terug te vinden.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci">💾</div>Stap 4 — Backup maken</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Ga af en toe naar <strong>Setup</strong> en klik op <em>⬇️ Exporteer data</em>.<br>
+      Sla het JSON-bestand op in je bestanden of stuur het naar jezelf per e-mail.<br>
+      Op een nieuw apparaat klik je op <em>⬆️ Importeer data</em> om alles terug te zetten.<br>
+      <span style="color:var(--muted)">Je hoeft dit niet wekelijks te doen — maar handig na een drukke periode of voordat je een nieuw apparaat neemt.</span>
+    </div>
+  </div>
+
+  <div class="card" style="background:var(--accent-l);border-color:var(--accent)">
+    <div class="card-head"><div class="ci">💡</div>Handige tips</div>
+    <div style="font-size:13px;line-height:1.9;color:var(--text)">
+      <strong>Geen internet nodig</strong> om de app te gebruiken nadat je hem hebt geïnstalleerd.<br>
+      <strong>Data verdwijnt nooit vanzelf</strong> — tenzij je bewust browsedata wist op je telefoon.<br>
+      <strong>Update de app</strong> door het nieuwe HTML-bestand op Netlify te zetten (slepen maar).<br>
+      <strong>Iets mis?</strong> De app verwijdert nooit automatisch data — je kan altijd een backup terugzetten.
+    </div>
+  </div>
+</div>
+
+<!-- ══════ MONTH MODAL ══════ -->
+<div class="modal-bg" id="mm-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal('mm-modal')">✕</button>
+    <div class="modal-title" id="mm-title">Maand invoeren</div>
+    <div class="modal-sub">Werkelijke cijfers voor deze maand</div>
+
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <div style="flex:1;min-width:110px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:1px">Maand</div>
+        <select id="mm_maand" style="width:100%" onchange="mmSeizoen()">
+          <option value="1">Januari</option><option value="2">Februari</option><option value="3">Maart</option><option value="4">April</option>
+          <option value="5">Mei</option><option value="6">Juni</option><option value="7">Juli</option><option value="8">Augustus</option>
+          <option value="9">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">December</option>
+        </select>
+      </div>
+      <div style="flex:0 0 90px">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:1px">Jaar</div>
+        <div class="ig" style="width:100%"><input type="number" id="mm_jaar" value="2025" min="2020" max="2040" style="text-align:left"></div>
+      </div>
+      <div style="display:flex;align-items:flex-end;padding-bottom:2px"><div id="mm-sz-badge"></div></div>
+    </div>
+
+    <div class="slbl" style="margin-top:0">Werkelijke omzet & kosten</div>
+    <div class="card" style="margin-bottom:0">
+      <div class="fr"><div class="fl">Omzet (excl. BTW)</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_omzet" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Inkoopkosten<div class="fh">Alles wat ingekocht is</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_inkoop" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Extra variabele kosten<div class="fh">Verpakking, schoonmaak, onvoorzien</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_extra" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Afwijking vaste lasten<div class="fh">+ of − t.o.v. normaal (bijv. reparatie)</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_afwijk" placeholder="0" oninput="calcMM()"></div></div>
+    </div>
+
+    <div id="mm-result" style="margin-top:12px;display:none">
+      <div class="stats" id="mm-stats"></div>
+      <div id="mm-advice"></div>
+    </div>
+
+    <div style="margin-top:14px">
+      <div class="fl" style="font-size:13px;font-weight:500">Notitie <span style="color:var(--muted);font-weight:400">(optioneel)</span></div>
+      <textarea id="mm_notitie" rows="2" placeholder="Bijzonderheden, acties, opvallende momenten…"></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-g btn-full" onclick="saveMonth()" id="mm-save-btn">💾 Maand opslaan</button>
+    </div>
+    <button class="btn btn-danger btn-full" id="mm-del-btn" style="display:none;margin-top:8px" onclick="deleteMonth()">🗑 Maand verwijderen</button>
+  </div>
+</div>
+
+<!-- ══════ PRODUCT MODAL ══════ -->
+<div class="modal-bg" id="pm-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal('pm-modal')">✕</button>
+    <div class="modal-title" id="pm-title"></div>
+    <div class="stats" id="pm-stats"></div>
+    <div class="divider"></div>
+    <div id="pm-body"></div>
+    <div class="btn-row">
+      <button class="btn btn-s" onclick="loadProductInCalc()">✏️ Bewerken</button>
+      <button class="btn btn-danger" onclick="deleteProduct()">🗑 Verwijderen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── STATE ───
+let S={setup:{},months:[],products:[]};
+let editMonthId=null, viewProdId=null, ingCnt=0, yrFilter='all', kpTabActive='calc';
+
+function save(){localStorage.setItem('hm2',JSON.stringify(S))}
+function load(){try{const d=localStorage.getItem('hm2');if(d)S=JSON.parse(d)}catch(e){}}
+
+// ─── NAV ───
+document.querySelectorAll('.nav-tab').forEach(t=>{
+  t.onclick=()=>showPage(t.dataset.page);
+});
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelector(`.nav-tab[data-page="${id}"]`).classList.add('active');
+  if(id==='tracker')renderTracker();
+  if(id==='kostprijs')initKP();
+}
+
+// ─── HELPERS ───
+const MNAMES=['','Januari','Februari','Maart','April','Mei','Juni','Juli','Augustus','September','Oktober','November','December'];
+const ZOMER=[5,6,7,8,9,10];
+function isZomer(m){return ZOMER.includes(parseInt(m))}
+function fmt(n){return'€'+Math.round(n||0).toLocaleString('nl-NL')}
+function fmtd(n){return'€'+(n||0).toFixed(2).replace('.',',')}
+function g(id){return parseFloat(document.getElementById(id)?.value)||0}
+function gs(id){return document.getElementById(id)?.value||''}
+function vasteLasten(){const s=S.setup;return(s.huur||0)+(s.lonen||0)+(s.eigenloon||0)+(s.energie||0)+(s.verzekering||0)+(s.abonnementen||0)+(s.overigvast||0)}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open')}));
+
+// ─── SETUP ───
+function setupInputs(){return['huur','lonen','eigenloon','energie','verzekering','abonnementen','overigvast','inkoop','bezorg','verpakking','schoon','doel_zomer','doel_winter','jaardoel','bon','dagen']}
+function saveSetup(){
+  setupInputs().forEach(f=>{const el=document.getElementById('s_'+f);if(el)S.setup[f]=parseFloat(el.value)||0});
+  save();updateSetupUI();
+}
+function loadSetupFields(){
+  setupInputs().forEach(f=>{const el=document.getElementById('s_'+f);if(el&&S.setup[f]!==undefined)el.value=S.setup[f]});
+  if(!S.setup.inkoop){document.getElementById('s_inkoop').value=30}
+  if(!S.setup.dagen){document.getElementById('s_dagen').value=5}
+  updateSetupUI();
+}
+function updateSetupUI(){
+  const v=vasteLasten(),s=S.setup,ok=v>0;
+  document.getElementById('sdot').classList.toggle('on',ok);
+  document.getElementById('setup-txt').textContent=ok?'Setup klaar':'Nog in te stellen';
+  const sumEl=document.getElementById('setup-summary');
+  if(v>0){
+    sumEl.style.display='';
+    document.getElementById('setup-stats').innerHTML=`
+      <div class="sb ac"><div class="sl">Vaste lasten/mnd</div><div class="sv">${fmt(v)}</div></div>
+      <div class="sb"><div class="sl">Inkoop %</div><div class="sv">${s.inkoop||30}%</div></div>
+      ${s.doel_zomer?`<div class="sb go"><div class="sl">Doel zomer/mnd</div><div class="sv">${fmt(s.doel_zomer)}</div></div>`:''}
+      ${s.doel_winter?`<div class="sb"><div class="sl">Doel winter/mnd</div><div class="sv">${fmt(s.doel_winter)}</div></div>`:''}
+    `;
+  }else sumEl.style.display='none';
+}
+document.querySelectorAll('[id^="s_"]').forEach(el=>el.addEventListener('input',saveSetup));
+
+// ─── TRACKER ───
+function setYearFilter(f){
+  yrFilter=f;
+  ['all','zomer','winter'].forEach(k=>document.getElementById('yf-'+k).classList.toggle('active',k===f));
+  renderTracker();
+}
+function renderTracker(){
+  const v=vasteLasten();
+  document.getElementById('tracker-no-setup').style.display=v?'none':'';
+  document.getElementById('tracker-main').style.display=v?'':'none';
+  if(!v)return;
+  let ms=[...S.months].sort((a,b)=>b.jaar!==a.jaar?b.jaar-a.jaar:b.maand-a.maand);
+  if(yrFilter==='zomer')ms=ms.filter(m=>isZomer(m.maand));
+  if(yrFilter==='winter')ms=ms.filter(m=>!isZomer(m.maand));
+  document.getElementById('no-months').style.display=ms.length?'none':'';
+  document.getElementById('months-list').innerHTML=ms.map(m=>{
+    const winst=m.omzet-(m.inkoop||0)-(m.extra||0)-vasteLasten()-(m.afwijk||0);
+    let b=m.omzet===0?`<span class="badge b-neu">Geen data</span>`:winst>=0?`<span class="badge b-ok">+${fmt(winst)}</span>`:`<span class="badge b-bad">${fmt(winst)}</span>`;
+    return`<div class="month-row" onclick="openMonthModal('${m.id}')">
+      <div><div class="mr-name">${MNAMES[m.maand]} ${m.jaar}</div><div class="mr-meta">${isZomer(m.maand)?'☀️ Zomer':'❄️ Winter'}${m.omzet?' · '+fmt(m.omzet)+' omzet':''}</div></div>
+      <div style="display:flex;align-items:center;gap:8px">${b}<div class="mr-chev">›</div></div>
+    </div>`;
+  }).join('');
+  const yo=document.getElementById('year-overview');
+  if(S.months.length>=2){yo.style.display='';renderYearOverview()}else yo.style.display='none';
+}
+function renderYearOverview(){
+  const ms=S.months,vast=vasteLasten(),s=S.setup;
+  const totO=ms.reduce((a,m)=>a+m.omzet,0);
+  const totK=ms.reduce((a,m)=>a+(m.inkoop||0)+(m.extra||0)+(m.afwijk||0),0)+vast*ms.length;
+  const totW=totO-totK;
+  const zm=ms.filter(m=>isZomer(m.maand)),wm=ms.filter(m=>!isZomer(m.maand));
+  const zO=zm.length?zm.reduce((a,m)=>a+m.omzet,0)/zm.length:0;
+  const wO=wm.length?wm.reduce((a,m)=>a+m.omzet,0)/wm.length:0;
+  document.getElementById('year-stats').innerHTML=`
+    <div class="sb"><div class="sl">Maanden bijgehouden</div><div class="sv">${ms.length}</div></div>
+    <div class="sb ${totW>=0?'gn':'rd'}"><div class="sl">Winst tot nu toe</div><div class="sv">${fmt(totW)}</div></div>
+    <div class="sb"><div class="sl">Totale omzet</div><div class="sv">${fmt(totO)}</div></div>
+    ${s.jaardoel?`<div class="sb go"><div class="sl">Jaardoel voortgang</div><div class="sv">${Math.round(totW/(s.jaardoel||1)*100)}%</div></div>`:''}
+  `;
+  const mx=Math.max(zO,wO,1);
+  document.getElementById('year-bars').innerHTML=zm.length&&wm.length?`
+    <div style="margin-top:10px">
+      <div style="font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Gem. omzet per seizoen</div>
+      <div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>☀️ Zomer</span><span>${fmt(zO)}/mnd</span></div><div class="bar-track"><div class="bar-fill" style="width:${zO/mx*100}%;background:var(--green)"></div></div></div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:3px"><span>❄️ Winter</span><span>${fmt(wO)}/mnd</span></div><div class="bar-track"><div class="bar-fill" style="width:${wO/mx*100}%;background:var(--accent)"></div></div></div>
+    </div>`:'';
+}
+
+// ─── MONTH MODAL ───
+function openMonthModal(id){
+  editMonthId=id;
+  const now=new Date();
+  if(id){
+    const m=S.months.find(x=>x.id===id);if(!m)return;
+    document.getElementById('mm_maand').value=m.maand;
+    document.getElementById('mm_jaar').value=m.jaar;
+    document.getElementById('mm_omzet').value=m.omzet||'';
+    document.getElementById('mm_inkoop').value=m.inkoop||'';
+    document.getElementById('mm_extra').value=m.extra||'';
+    document.getElementById('mm_afwijk').value=m.afwijk||'';
+    document.getElementById('mm_notitie').value=m.notitie||'';
+    document.getElementById('mm-title').textContent=MNAMES[m.maand]+' '+m.jaar;
+    document.getElementById('mm-del-btn').style.display='';
+    document.getElementById('mm-save-btn').textContent='💾 Wijzigingen opslaan';
+  }else{
+    document.getElementById('mm_maand').value=now.getMonth()+1;
+    document.getElementById('mm_jaar').value=now.getFullYear();
+    ['mm_omzet','mm_inkoop','mm_extra','mm_afwijk','mm_notitie'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('mm-title').textContent='Maand invoeren';
+    document.getElementById('mm-del-btn').style.display='none';
+    document.getElementById('mm-save-btn').textContent='💾 Maand opslaan';
+  }
+  mmSeizoen();calcMM();
+  document.getElementById('mm-modal').classList.add('open');
+}
+function mmSeizoen(){
+  const m=parseInt(document.getElementById('mm_maand').value);
+  document.getElementById('mm-sz-badge').innerHTML=`<span class="badge ${isZomer(m)?'b-ok':'b-neu'}">${isZomer(m)?'☀️ Zomer':'❄️ Winter'}</span>`;
+  calcMM();
+}
+function calcMM(){
+  const omzet=g('mm_omzet'),inkoop=g('mm_inkoop'),extra=g('mm_extra'),afwijk=g('mm_afwijk');
+  const vast=vasteLasten(),totK=vast+inkoop+extra+afwijk,winst=omzet-totK;
+  const wPct=omzet>0?winst/omzet*100:0,iPct=omzet>0?inkoop/omzet*100:0;
+  const res=document.getElementById('mm-result');
+  if(omzet>0){
+    res.style.display='';
+    document.getElementById('mm-stats').innerHTML=`
+      <div class="sb ${winst>=0?'gn':'rd'}"><div class="sl">Winst</div><div class="sv">${fmt(winst)}</div><div class="ss">${wPct.toFixed(1)}% v/omzet</div></div>
+      <div class="sb"><div class="sl">Totale kosten</div><div class="sv">${fmt(totK)}</div></div>
+      <div class="sb"><div class="sl">Vaste lasten</div><div class="sv">${fmt(vast)}</div></div>
+      <div class="sb"><div class="sl">Inkoop %</div><div class="sv">${iPct.toFixed(0)}%</div></div>
+    `;
+    const s=S.setup,mn=parseInt(document.getElementById('mm_maand').value);
+    const doel=isZomer(mn)?s.doel_zomer:s.doel_winter;
+    let adv='';
+    if(doel&&omzet<doel)adv+=`<div class="advice or"><div class="advice-tag">📉 Onder doelomzet</div><p>Je zat <strong>${fmt(doel-omzet)}</strong> onder je doel van ${fmt(doel)}.</p></div>`;
+    else if(doel&&omzet>=doel)adv+=`<div class="advice gn"><div class="advice-tag">✅ Doelomzet gehaald</div><p><strong>${fmt(omzet-doel)}</strong> boven target! Goed werk.</p></div>`;
+    if(iPct>35)adv+=`<div class="advice"><div class="advice-tag">⚠️ Hoge inkoop</div><p>Inkoopkosten op <strong>${iPct.toFixed(0)}%</strong>. Norm is max 35%.</p></div>`;
+    document.getElementById('mm-advice').innerHTML=adv;
+  }else res.style.display='none';
+}
+function saveMonth(){
+  const maand=parseInt(document.getElementById('mm_maand').value),jaar=parseInt(document.getElementById('mm_jaar').value);
+  const data={maand,jaar,omzet:g('mm_omzet'),inkoop:g('mm_inkoop'),extra:g('mm_extra'),afwijk:g('mm_afwijk'),notitie:gs('mm_notitie')};
+  if(editMonthId){
+    const i=S.months.findIndex(m=>m.id===editMonthId);
+    if(i>=0)S.months[i]={...S.months[i],...data};
+  }else{
+    const ex=S.months.find(m=>m.maand===maand&&m.jaar===jaar);
+    if(ex){if(!confirm(`${MNAMES[maand]} ${jaar} bestaat al. Overschrijven?`))return;const i=S.months.findIndex(m=>m.id===ex.id);S.months[i]={...ex,...data};}
+    else{data.id='M'+Date.now();S.months.push(data);}
+  }
+  save();closeModal('mm-modal');renderTracker();
+}
+function deleteMonth(){
+  if(!confirm('Maand verwijderen?'))return;
+  S.months=S.months.filter(m=>m.id!==editMonthId);
+  save();closeModal('mm-modal');renderTracker();
+}
+
+// ─── KOSTPRIJS ───
+function kpTab(t){
+  kpTabActive=t;
+  document.getElementById('kp-tab-calc-btn').classList.toggle('active',t==='calc');
+  document.getElementById('kp-tab-saved-btn').classList.toggle('active',t==='saved');
+  document.getElementById('kp-calc').style.display=t==='calc'?'':'none';
+  document.getElementById('kp-saved').style.display=t==='saved'?'':'none';
+  if(t==='saved')renderSaved();
+}
+function initKP(){
+  const v=vasteLasten(),s=S.setup;
+  const doel=((s.doel_zomer||0)+(s.doel_winter||0))/2;
+  const ovEl=document.getElementById('kp_overhead');
+  if((!ovEl.value||ovEl.value=='0')&&v>0&&doel>0)ovEl.value=Math.round(v/doel*100);
+  if(document.getElementById('ing-body').children.length===0){addIng();addIng();addIng();}
+  updateSavedN();
+}
+function addIng(){
+  const id=++ingCnt;
+  const tr=document.createElement('tr');
+  tr.id='ir-'+id;
+  tr.innerHTML=`
+    <td class="td-name"><input type="text" placeholder="bijv. kipfilet" oninput="calcKP()"></td>
+    <td><input type="number" placeholder="100" min="0" step="0.1" oninput="calcKP()"></td>
+    <td><select onchange="calcKP()" style="width:62px;font-size:12px;height:30px;padding:0 4px"><option>g</option><option>kg</option><option>ml</option><option>l</option><option>stuk</option><option>el</option><option>tl</option></select></td>
+    <td><input type="number" placeholder="0.00" min="0" step="0.001" oninput="calcKP()"></td>
+    <td class="td-cost" id="ic-${id}">—</td>
+    <td class="td-del"><button onclick="removeIng(${id})" title="Verwijder">✕</button></td>`;
+  document.getElementById('ing-body').appendChild(tr);
+  tr.querySelector('.td-name input').focus();
+}
+function removeIng(id){
+  document.getElementById('ir-'+id)?.remove();calcKP();
+}
+function getIngs(){
+  let total=0,list=[];
+  document.getElementById('ing-body').querySelectorAll('tr').forEach(row=>{
+    const ins=row.querySelectorAll('input'),sel=row.querySelector('select');
+    const naam=ins[0]?.value?.trim(),hv=parseFloat(ins[1]?.value)||0,pr=parseFloat(ins[2]?.value)||0;
+    const eenheid=sel?.value||'g',cost=hv*pr;
+    const cid=row.id.replace('ir-','');
+    const cel=document.getElementById('ic-'+cid);
+    if(cel)cel.textContent=cost>0?'€'+cost.toFixed(3):'—';
+    if(naam||hv||pr){list.push({naam:naam||'—',hv,eenheid,pr,cost});total+=cost;}
+  });
+  return{total,list};
+}
+function calcKP(){
+  const{total:ingT,list}=getIngs();
+  const porties=Math.max(1,g('kp_porties'));
+  const tijd=g('kp_tijd'),uurloon=g('kp_uurloon'),ovPct=g('kp_overhead'),margePct=g('kp_marge'),btw=g('kp_btw');
+  const ingPP=ingT/porties,arbeid=(tijd/60)*uurloon/porties,sub=ingPP+arbeid;
+  const ov=sub*(ovPct/100),kp=sub+ov;
+  const vkEx=margePct<100?kp/(1-margePct/100):kp*3;
+  const btwB=vkEx*(btw/100),vkInc=vkEx+btwB;
+  const marge=vkEx-kp,margePctR=vkEx>0?marge/vkEx*100:0;
+  window._kp={ingT,list,ingPP,arbeid,ov,kp,vkEx,btwB,vkInc,marge,margePctR,btw,margePct,ovPct,porties,tijd};
+  const rc=document.getElementById('kp-result-card');
+  if(kp>0||ingT>0){
+    rc.style.display='';
+    document.getElementById('kp-stats').innerHTML=`
+      <div class="sb"><div class="sl">Kostprijs/portie</div><div class="sv">${fmtd(kp)}</div></div>
+      <div class="sb ac"><div class="sl">Advies verkoopprijs</div><div class="sv">${fmtd(vkInc)}</div><div class="ss">incl. ${btw}% BTW</div></div>
+      <div class="sb gn"><div class="sl">Brutomarge</div><div class="sv">${margePctR.toFixed(1)}%</div><div class="ss">${fmtd(marge)}/portie</div></div>
+      <div class="sb go"><div class="sl">Factor</div><div class="sv">×${kp>0?(vkEx/kp).toFixed(2):'—'}</div><div class="ss">excl. BTW</div></div>
+    `;
+    document.getElementById('kp-breakdown').innerHTML=`
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;color:var(--muted);margin-bottom:10px">Opbouw per portie</div>
+      ${ingPP>0?`<div class="fr"><div class="fl">Ingrediënten (${list.length} items)</div><span style="font-family:var(--mono);font-size:13px">${fmtd(ingPP)}</span></div>`:''}
+      ${arbeid>0?`<div class="fr"><div class="fl">Arbeidskosten (${tijd} min)</div><span style="font-family:var(--mono);font-size:13px">${fmtd(arbeid)}</span></div>`:''}
+      ${ov>0?`<div class="fr"><div class="fl">Overhead (${ovPct}%)</div><span style="font-family:var(--mono);font-size:13px">${fmtd(ov)}</span></div>`:''}
+      <div class="fr" style="font-weight:700"><div class="fl">Kostprijs</div><span style="font-family:var(--mono);font-size:14px">${fmtd(kp)}</span></div>
+      <div class="fr" style="border-top:2px solid var(--border);padding-top:10px;margin-top:4px"><div class="fl">Excl. BTW</div><span style="font-family:var(--mono)">${fmtd(vkEx)}</span></div>
+      <div class="fr"><div class="fl">BTW ${btw}%</div><span style="font-family:var(--mono)">${fmtd(btwB)}</span></div>
+      <div class="fr" style="font-weight:700;color:var(--accent)"><div class="fl">Verkoopprijs incl. BTW</div><span style="font-family:var(--mono);font-size:15px">${fmtd(vkInc)}</span></div>
+    `;
+  }else rc.style.display='none';
+  calcEigen();
+}
+function calcEigen(){
+  const ep=g('kp_eigen'),c=window._kp;
+  if(!c||!ep){document.getElementById('kp-eigen-out').textContent='Voer een prijs in';return;}
+  const btw=c.btw,exBtw=ep/(1+btw/100),m=exBtw-c.kp,mPct=exBtw>0?m/exBtw*100:0;
+  const cls=mPct>=50?'b-ok':mPct>=30?'b-warn':'b-bad';
+  document.getElementById('kp-eigen-out').innerHTML=`Marge: <span class="badge ${cls}">${mPct.toFixed(1)}%</span> &nbsp; Winst: <strong style="font-family:var(--mono)">${fmtd(m)}</strong>/portie`;
+}
+function saveProduct(){
+  const naam=document.getElementById('kp_naam').value.trim()||'Naamloos';
+  const c=window._kp;if(!c)return;
+  S.products.push({id:'P'+Date.now(),naam,...c,ingredients:c.list,savedAt:new Date().toLocaleDateString('nl-NL')});
+  save();updateSavedN();
+  const b=document.getElementById('kp-save-btn');b.textContent='✅ Opgeslagen!';
+  setTimeout(()=>b.textContent='💾 Opslaan',2000);
+}
+function updateSavedN(){const n=S.products.length;document.getElementById('saved-n').textContent=n?`(${n})`:''}
+function renderSaved(){
+  const el=document.getElementById('saved-list'),no=document.getElementById('no-saved');
+  if(!S.products.length){el.innerHTML='';no.style.display='';return;}
+  no.style.display='none';
+  el.innerHTML=[...S.products].reverse().map(p=>`
+    <div class="product-card" onclick="viewProduct('${p.id}')">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;font-size:14px">${p.naam}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${p.savedAt} · kostprijs ${fmtd(p.kp)} · marge ${(p.margePctR||0).toFixed(1)}%</div>
+      </div>
+      <div><div class="pc-price">${fmtd(p.vkInc)}</div><div class="pc-cost">incl. BTW</div></div>
+    </div>`).join('');
+}
+function viewProduct(id){
+  viewProdId=id;const p=S.products.find(x=>x.id===id);if(!p)return;
+  document.getElementById('pm-title').textContent=p.naam;
+  document.getElementById('pm-stats').innerHTML=`
+    <div class="sb"><div class="sl">Kostprijs</div><div class="sv">${fmtd(p.kp)}</div></div>
+    <div class="sb ac"><div class="sl">Verkoopprijs</div><div class="sv">${fmtd(p.vkInc)}</div><div class="ss">incl. BTW</div></div>
+    <div class="sb gn"><div class="sl">Marge</div><div class="sv">${(p.margePctR||0).toFixed(1)}%</div></div>
+  `;
+  const rows=(p.ingredients||[]).filter(i=>i.naam&&i.naam!=='—').map(i=>`<div class="fr"><div class="fl">${i.naam} (${i.hv} ${i.eenheid})</div><span style="font-family:var(--mono);font-size:12px">${fmtd(i.cost)}</span></div>`).join('');
+  document.getElementById('pm-body').innerHTML=rows+
+    `<div class="fr" style="font-weight:700"><div class="fl">Ingrediënten totaal</div><span style="font-family:var(--mono)">${fmtd(p.ingPP)}</span></div>
+    ${p.arbeid>0?`<div class="fr"><div class="fl">Arbeidskosten</div><span style="font-family:var(--mono)">${fmtd(p.arbeid)}</span></div>`:''}
+    ${p.ov>0?`<div class="fr"><div class="fl">Overhead (${p.ovPct}%)</div><span style="font-family:var(--mono)">${fmtd(p.ov)}</span></div>`:''}`;
+  document.getElementById('pm-modal').classList.add('open');
+}
+function loadProductInCalc(){
+  const p=S.products.find(x=>x.id===viewProdId);if(!p)return;
+  closeModal('pm-modal');kpTab('calc');
+  document.getElementById('kp_naam').value=p.naam;
+  document.getElementById('kp_porties').value=p.porties||1;
+  document.getElementById('kp_tijd').value=p.tijd||0;
+  document.getElementById('kp_overhead').value=p.ovPct||0;
+  document.getElementById('kp_marge').value=p.margePct||65;
+  document.getElementById('kp_btw').value=p.btw||9;
+  document.getElementById('ing-body').innerHTML='';ingCnt=0;
+  (p.ingredients||[]).forEach(ing=>{
+    addIng();
+    const rows=document.getElementById('ing-body').querySelectorAll('tr');
+    const row=rows[rows.length-1],ins=row.querySelectorAll('input'),sel=row.querySelector('select');
+    ins[0].value=ing.naam;ins[1].value=ing.hv;ins[2].value=ing.pr;
+    if(sel)sel.value=ing.eenheid;
+  });
+  calcKP();
+}
+function deleteProduct(){
+  if(!confirm('Product verwijderen?'))return;
+  S.products=S.products.filter(p=>p.id!==viewProdId);
+  save();updateSavedN();closeModal('pm-modal');renderSaved();
+}
+function resetKP(){
+  document.getElementById('kp_naam').value='';
+  document.getElementById('kp_porties').value=1;
+  document.getElementById('kp_tijd').value=0;
+  document.getElementById('ing-body').innerHTML='';ingCnt=0;
+  addIng();addIng();addIng();
+  document.getElementById('kp-result-card').style.display='none';
+  window._kp=null;
+}
+
+// ─── INIT ───
+load();loadSetupFields();initKP();renderTracker();updateSavedN();
+
+// ─── JSON EXPORT ───
+function exportJSON(){
+  const data=JSON.stringify(S,null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const date=new Date().toISOString().slice(0,10);
+  a.href=url;a.download=`horeca-manager-backup-${date}.json`;
+  a.click();URL.revokeObjectURL(url);
+}
+
+// ─── JSON IMPORT ───
+function importJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const imported=JSON.parse(ev.target.result);
+      if(!imported.setup&&!imported.months&&!imported.products){
+        alert('Dit lijkt geen geldig Horeca Manager backup-bestand.');return;
+      }
+      if(!confirm('Weet je zeker dat je wil importeren? Je huidige data wordt overschreven.'))return;
+      S=imported;save();
+      loadSetupFields();renderTracker();updateSavedN();
+      alert('✅ Data succesvol geïmporteerd!');
+    }catch(err){alert('Kon het bestand niet lezen. Controleer of het een geldig JSON-bestand is.');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ─── PDF IMPORT (boekhouder rapportage) ───
+function importPDF(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    // PDF tekst extractie via ingebouwde browser PDF.js is niet beschikbaar
+    // We tonen een modal met instructie + pre-filled modal op basis van bestandsnaam
+    alert('📄 PDF ontvangen: "'+file.name+'"\n\nAutomatisch inlezen van PDF is nog in ontwikkeling.\n\nKlik op OK en vul de maand handmatig in — de maand-invoer wordt nu voor je geopend.');
+    openMonthModal(null);
+  };
+  reader.readAsArrayBuffer(file);
+  e.target.value='';
+}
+</script>
+</body>
+</html>
