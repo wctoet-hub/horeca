@@ -519,6 +519,7 @@ textarea:focus{border-color:var(--accent)}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 // ─── STATE ───
 let S={setup:{},months:[],products:[]};
@@ -918,135 +919,129 @@ function importPDF(e){
   if(!files.length)return;
   let processed=0,failed=0;
   const total=files.length;
+  const btn=document.querySelector('#pdf-import-input').previousElementSibling;
+  if(btn){btn._orig=btn.textContent;btn.textContent='⏳ Bezig...';btn.disabled=true;}
+
+  // Stel PDF.js worker in
+  if(window.pdfjsLib){
+    pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
 
   files.forEach(file=>{
     const reader=new FileReader();
-    reader.onload=function(ev){
-      const text=extractTextFromPDF(ev.target.result)||'';
-      const raw=parseExactPDF(text,file.name);
-      if(!raw){
-        failed++;
-        alert('Kon "'+file.name+'" niet herkennen als Exact Online rapport.');
-        checkDone();return;
-      }
+    reader.onload=async function(ev){
+      try{
+        let tekst='';
+        if(window.pdfjsLib){
+          // Lees PDF lokaal via PDF.js — geen API, geen internet
+          const typedArray=new Uint8Array(ev.target.result);
+          const pdf=await pdfjsLib.getDocument({data:typedArray}).promise;
+          for(let i=1;i<=pdf.numPages;i++){
+            const page=await pdf.getPage(i);
+            const textContent=await page.getTextContent();
+            tekst+=textContent.items.map(item=>item.str).join(' ')+'\n';
+          }
+        } else {
+          // Fallback: probeer als tekst
+          tekst=new TextDecoder('utf-8',{fatal:false}).decode(ev.target.result);
+        }
 
-      // ─ Stap 1: vaste lasten vergelijken en afwijkingen detecteren ─
-      const data=checkEnVerwerkVasteLasten(raw);
-
-      // ─ Stap 2: opslaan ─
-      const ex=S.months.find(m=>m.maand===data.maand&&m.jaar===data.jaar);
-      if(ex){
-        if(!confirm(`${MNAMES[data.maand]} ${data.jaar} bestaat al. Overschrijven met data uit "${file.name}"?`)){checkDone();return;}
-        const i=S.months.findIndex(m=>m.id===ex.id);
-        S.months[i]={...ex,...data};
-      }else{
-        data.id='M'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
-        S.months.push(data);
-      }
-      processed++;
-      save();renderTracker();updateSetupUI();
+        const raw=parseExactPDFTekst(tekst,file.name);
+        if(!raw){failed++;alert('Kon "'+file.name+'" niet herkennen als Exact Online rapport.');checkDone();return;}
+        const data=checkEnVerwerkVasteLasten(raw);
+        const ex=S.months.find(m=>m.maand===data.maand&&m.jaar===data.jaar);
+        if(ex){
+          if(!confirm(MNAMES[data.maand]+' '+data.jaar+' bestaat al. Overschrijven met data uit "'+file.name+'"?')){checkDone();return;}
+          const i=S.months.findIndex(m=>m.id===ex.id);
+          S.months[i]={...ex,...data};
+        }else{
+          data.id='M'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+          S.months.push(data);
+        }
+        processed++;save();renderTracker();updateSetupUI();
+      }catch(err){failed++;alert('Fout bij "'+file.name+'": '+err.message);}
       checkDone();
     };
-    reader.readAsText(file,'utf-8');
+    reader.readAsArrayBuffer(file);
   });
   e.target.value='';
-
   function checkDone(){
-    if(processed+failed===total){
-      if(processed>0)alert(`✅ ${processed} maand${processed>1?'en':''} succesvol ingelezen!`);
-    }
+    if(processed+failed<total)return;
+    if(btn){btn.textContent=btn._orig;btn.disabled=false;}
+    if(processed>0)alert('✅ '+processed+' maand'+(processed>1?'en':'')+' succesvol ingelezen!');
   }
 }
 
-// ─ Vergelijk vaste lasten met historisch gemiddelde, stel voor om Setup bij te werken ─
-function checkEnVerwerkVasteLasten(data){
-  const s=S.setup;
-  const DREMPEL=5;
-  const STRUCTUREEL_DREMPEL=2; // aantal maanden op rij voor Setup-update voorstel
+function parseExactPDFTekst(tekst,filename){
+  // Normaliseer whitespace maar bewaar regeleinden
+  const regels=tekst.split('\n').map(r=>r.trim()).filter(r=>r.length>0);
+  const t=regels.join(' ');
 
-  // Vaste posten: {label, setupKey, rapportWaarde}
-  const vastePosten=[
-    {label:'Huur', key:'huur', val:data._rawKosten?.huur||0},
-    {label:'Gas en licht', key:'energie', val:data._rawKosten?.energie||0},
-    {label:'Water', key:'water', val:data._rawKosten?.water||0},
-    {label:'Bankkosten', key:'bankkosten', val:data._rawKosten?.bankkosten||0},
-    {label:'Telefoon', key:'telefoon', val:data._rawKosten?.telefoon||0},
-    {label:'Contributies en abonnementen', key:'contributies', val:data._rawKosten?.contributies||0},
-    {label:'Accountant / administratie', key:'accountant', val:data._rawKosten?.accountant||0},
-    {label:'Verzekeringen', key:'verzekering', val:data._rawKosten?.verzekering||0},
-  ];
+  function parseNL(s){if(!s)return 0;return parseFloat(s.replace(/\./g,'').replace(',','.'))||0;}
 
-  let totaalAfwijking=0;
+  // Zoek bedrag bij rekeningnummer — werkt met PDF.js tekstextractie
+  function getBedrag(code){
+    // Patroon 1: "4110 - Omschrijving 850,00 850,00" — pak eerste bedrag na code
+    const re1=new RegExp(code+'[^0-9]{0,80}?(\\d{1,3}(?:\\.\\d{3})*,\\d{2})');
+    const m1=t.match(re1);
+    if(m1)return parseNL(m1[1]);
 
-  for(const post of vastePosten){
-    const setupWaarde=s[post.key]||0;
-    const rapportWaarde=post.val;
-
-    // Geen van beide ingevuld — sla over
-    if(setupWaarde===0&&rapportWaarde===0)continue;
-
-    // Setup nog leeg maar rapport heeft waarde — vul Setup automatisch in
-    if(setupWaarde===0&&rapportWaarde>0){
-      if(confirm(`"${post.label}" staat nog niet in je Setup.\nRapport toont: €${fmtBedrag(rapportWaarde)}\n\nWil je Setup hiermee invullen?`)){
-        S.setup[post.key]=rapportWaarde;
-        const el=document.getElementById('s_'+post.key);
-        if(el)el.value=rapportWaarde;
+    // Patroon 2: zoek in regels — code staat op zelfde of aangrenzende regel als bedrag
+    for(let i=0;i<regels.length;i++){
+      if(regels[i].indexOf(code)>=0){
+        // Zoek bedrag op deze of volgende regel
+        for(let j=i;j<=Math.min(i+3,regels.length-1);j++){
+          const bedragMatch=regels[j].match(/(\d{1,3}(?:\.\d{3})*,\d{2})/g);
+          if(bedragMatch&&bedragMatch.length>0){
+            // Neem het laatste bedrag op de regel (eindsaldo)
+            return parseNL(bedragMatch[bedragMatch.length-1]);
+          }
+        }
       }
-      continue;
     }
-
-    const diff=rapportWaarde-setupWaarde;
-    if(Math.abs(diff)<DREMPEL)continue;
-
-    // Kijk of deze post de laatste maanden ook al afweek (structureel)
-    const aantalAfwijkend=S.months.filter(m=>{
-      const v=m._rawKosten?.[post.key]||0;
-      return v>0&&Math.abs(v-setupWaarde)>=DREMPEL;
-    }).length;
-
-    const isStructureel=aantalAfwijkend>=STRUCTUREEL_DREMPEL;
-    const richting=diff>0?'+':'−';
-
-    if(isStructureel){
-      // Stel voor om Setup bij te werken
-      const gemiddeld=S.months
-        .filter(m=>m._rawKosten?.[post.key]>0)
-        .reduce((a,m,_,arr)=>a+(m._rawKosten[post.key]||0)/arr.length,0);
-
-      const keuze=confirm(
-        `⚠️ Structurele afwijking: ${post.label}\n\n`
-        +`Setup: €${fmtBedrag(setupWaarde)}\n`
-        +`Dit rapport: €${fmtBedrag(rapportWaarde)}\n`
-        +`Gem. laatste maanden: €${fmtBedrag(gemiddeld)}\n\n`
-        +`Deze post wijkt al ${aantalAfwijkend} maanden af.\n`
-        +`Wil je Setup bijwerken naar €${fmtBedrag(rapportWaarde)}?\n\n`
-        +`OK = Setup bijwerken\nAnnuleer = eenmalig boeken als afwijking`
-      );
-      if(keuze){
-        S.setup[post.key]=rapportWaarde;
-        const el=document.getElementById('s_'+post.key);
-        if(el)el.value=rapportWaarde;
-        save();
-      }else{
-        totaalAfwijking+=diff;
-      }
-    }else{
-      // Éénmalige afwijking — vraag of boeken als afwijking
-      const keuze=confirm(
-        `⚠️ Afwijking vaste last: ${post.label}\n\n`
-        +`Setup: €${fmtBedrag(setupWaarde)}\n`
-        +`Dit rapport: €${fmtBedrag(rapportWaarde)}\n`
-        +`Verschil: ${richting}€${fmtBedrag(Math.abs(diff))}\n\n`
-        +`Wil je dit boeken als afwijking op vaste lasten?`
-      );
-      if(keuze)totaalAfwijking+=diff;
-    }
+    return 0;
   }
 
-  if(totaalAfwijking!==0){
-    data.afwijk=Math.round((data.afwijk||0)*100+totaalAfwijking*100)/100;
-  }
-  return data;
+  // Bepaal maand en jaar
+  let maand=0,jaar=new Date().getFullYear();
+  const maandNamen={jan:1,feb:2,mrt:3,mar:3,apr:4,mei:5,jun:6,jul:7,aug:8,sep:9,okt:10,nov:11,dec:12};
+  const fn=filename.toLowerCase();
+  for(const k in maandNamen){if(fn.indexOf(k)>=0){maand=maandNamen[k];break;}}
+  const fy=filename.match(/20\d{2}/);if(fy)jaar=parseInt(fy[0]);
+  if(!maand){const pm=t.match(/Periode\s+(\d{1,2})\s*[-–]\s*\d/i);if(pm)maand=parseInt(pm[1]);}
+  const cy=t.match(/Boekjaar\s+(20\d{2})/i);if(cy)jaar=parseInt(cy[1]);
+  if(!maand)return null;
+
+  const rawKosten={
+    huur:getBedrag('4110'),belastingen_og:getBedrag('4130'),onderhoud_gebouw:getBedrag('4140'),
+    energie:getBedrag('4170'),water:getBedrag('4171'),kleine_inv:getBedrag('4220'),
+    onderhoud_inv:getBedrag('4221'),kantoor:getBedrag('4300'),porto:getBedrag('4310'),
+    telefoon:getBedrag('4320'),drukwerk:getBedrag('4330'),automatisering:getBedrag('4340'),
+    auto:getBedrag('4420'),relatiegeschenken:getBedrag('4515'),reiskosten:getBedrag('4530'),
+    lunch:getBedrag('4535'),bankkosten:getBedrag('4600'),contributies:getBedrag('4720'),
+    accountant:getBedrag('4730'),cursussen:getBedrag('4740'),verzekering:getBedrag('4775'),
+  };
+
+  return{
+    maand:maand,jaar:jaar,
+    omzet:getBedrag('8000')+getBedrag('8010'),
+    inkoop:getBedrag('7000')+getBedrag('7010')+getBedrag('7011'),
+    v_belastingen:rawKosten.belastingen_og,
+    v_onderhoud_geb:rawKosten.onderhoud_gebouw,
+    v_kleine_inv:rawKosten.kleine_inv,
+    v_onderhoud_inv:rawKosten.onderhoud_inv,
+    v_auto:rawKosten.auto,
+    v_kantoor:rawKosten.kantoor,
+    v_porto:rawKosten.porto+rawKosten.drukwerk,
+    v_automatisering:rawKosten.automatisering,
+    v_relatiegeschenken:rawKosten.relatiegeschenken,
+    v_reiskosten:rawKosten.reiskosten,
+    v_lunch:rawKosten.lunch,
+    v_cursussen:rawKosten.cursussen,
+    afwijk:0,
+    notitie:'Ingelezen uit '+filename,
+    _rawKosten:rawKosten,
+  };
 }
 
 function fmtBedrag(n){return(n||0).toFixed(2).replace('.',',');}
