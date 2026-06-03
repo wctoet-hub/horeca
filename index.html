@@ -122,10 +122,10 @@ textarea:focus{border-color:var(--accent)}
 
 <nav class="nav">
   <div class="nav-brand">🍳 Horeca</div>
-  <button class="nav-tab active" data-page="setup">⚙ Setup</button>
-  <button class="nav-tab" data-page="tracker">📅 Maanden</button>
-  <button class="nav-tab" data-page="kostprijs">🧾 Kostprijs</button>
-  <button class="nav-tab" data-page="gids">📖 Gids</button>
+  <button class="nav-tab active" data-page="setup" onclick="showPage('setup')">⚙ Setup</button>
+  <button class="nav-tab" data-page="tracker" onclick="showPage('tracker')">📅 Maanden</button>
+  <button class="nav-tab" data-page="kostprijs" onclick="showPage('kostprijs')">🧾 Kostprijs</button>
+  <button class="nav-tab" data-page="gids" onclick="showPage('gids')">📖 Gids</button>
   <div class="nav-end"><div class="sdot" id="sdot"></div><span id="setup-txt">Nog in te stellen</span></div>
 </nav>
 
@@ -529,14 +529,13 @@ function save(){localStorage.setItem('hm2',JSON.stringify(S))}
 function load(){try{const d=localStorage.getItem('hm2');if(d)S=JSON.parse(d)}catch(e){}}
 
 // ─── NAV ───
-document.querySelectorAll('.nav-tab').forEach(t=>{
-  t.onclick=()=>showPage(t.dataset.page);
-});
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelector(`.nav-tab[data-page="${id}"]`).classList.add('active');
+  var pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  var tab=document.querySelector('.nav-tab[data-page="'+id+'"]');
+  if(tab)tab.classList.add('active');
   if(id==='tracker')renderTracker();
   if(id==='kostprijs')initKP();
 }
