@@ -1046,7 +1046,83 @@ function parseExactPDFTekst(tekst,filename){
 
 function fmtBedrag(n){return(n||0).toFixed(2).replace('.',',');}
 
-function extractTextFromPDF(content){
+function checkEnVerwerkVasteLasten(data){
+  const s=S.setup;
+  const DREMPEL=5;
+  const STRUCTUREEL_DREMPEL=2;
+
+  const vastePosten=[
+    {label:'Huur', key:'huur', val:data._rawKosten?.huur||0},
+    {label:'Gas en licht', key:'energie', val:data._rawKosten?.energie||0},
+    {label:'Water', key:'water', val:data._rawKosten?.water||0},
+    {label:'Bankkosten', key:'bankkosten', val:data._rawKosten?.bankkosten||0},
+    {label:'Telefoon', key:'telefoon', val:data._rawKosten?.telefoon||0},
+    {label:'Contributies en abonnementen', key:'contributies', val:data._rawKosten?.contributies||0},
+    {label:'Accountant / administratie', key:'accountant', val:data._rawKosten?.accountant||0},
+    {label:'Verzekeringen', key:'verzekering', val:data._rawKosten?.verzekering||0},
+  ];
+
+  let totaalAfwijking=0;
+
+  for(const post of vastePosten){
+    const setupWaarde=s[post.key]||0;
+    const rapportWaarde=post.val;
+    if(setupWaarde===0&&rapportWaarde===0)continue;
+
+    if(setupWaarde===0&&rapportWaarde>0){
+      if(confirm('"'+post.label+'" staat nog niet in je Setup.\nRapport toont: \u20ac'+fmtBedrag(rapportWaarde)+'\n\nWil je Setup hiermee invullen?')){
+        S.setup[post.key]=rapportWaarde;
+        const el=document.getElementById('s_'+post.key);
+        if(el)el.value=rapportWaarde;
+      }
+      continue;
+    }
+
+    const diff=rapportWaarde-setupWaarde;
+    if(Math.abs(diff)<DREMPEL)continue;
+
+    const aantalAfwijkend=S.months.filter(m=>{
+      const v=m._rawKosten?.[post.key]||0;
+      return v>0&&Math.abs(v-setupWaarde)>=DREMPEL;
+    }).length;
+
+    const isStructureel=aantalAfwijkend>=STRUCTUREEL_DREMPEL;
+    const richting=diff>0?'+':'-';
+
+    if(isStructureel){
+      const gemiddeld=S.months.filter(m=>m._rawKosten?.[post.key]>0).reduce((a,m,_,arr)=>a+(m._rawKosten[post.key]||0)/arr.length,0);
+      const keuze=confirm(
+        '\u26a0\ufe0f Structurele afwijking: '+post.label+'\n\n'
+        +'Setup: \u20ac'+fmtBedrag(setupWaarde)+'\n'
+        +'Dit rapport: \u20ac'+fmtBedrag(rapportWaarde)+'\n'
+        +'Gem. laatste maanden: \u20ac'+fmtBedrag(gemiddeld)+'\n\n'
+        +'Deze post wijkt al '+aantalAfwijkend+' maanden af.\n'
+        +'Wil je Setup bijwerken naar \u20ac'+fmtBedrag(rapportWaarde)+'?\n\n'
+        +'OK = Setup bijwerken\nAnnuleer = eenmalig boeken als afwijking'
+      );
+      if(keuze){
+        S.setup[post.key]=rapportWaarde;
+        const el=document.getElementById('s_'+post.key);
+        if(el)el.value=rapportWaarde;
+        save();
+      }else{totaalAfwijking+=diff;}
+    }else{
+      const keuze=confirm(
+        '\u26a0\ufe0f Afwijking vaste last: '+post.label+'\n\n'
+        +'Setup: \u20ac'+fmtBedrag(setupWaarde)+'\n'
+        +'Dit rapport: \u20ac'+fmtBedrag(rapportWaarde)+'\n'
+        +'Verschil: '+richting+'\u20ac'+fmtBedrag(Math.abs(diff))+'\n\n'
+        +'Wil je dit boeken als afwijking op vaste lasten?'
+      );
+      if(keuze)totaalAfwijking+=diff;
+    }
+  }
+
+  if(totaalAfwijking!==0){
+    data.afwijk=Math.round(((data.afwijk||0)+totaalAfwijking)*100)/100;
+  }
+  return data;
+}
   if(typeof content==='string')return content;
   try{
     const decoder=new TextDecoder('utf-8',{fatal:false});
