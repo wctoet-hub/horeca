@@ -132,25 +132,34 @@ textarea:focus{border-color:var(--accent)}
 <!-- ══════ SETUP ══════ -->
 <div class="page active" id="page-setup">
   <div class="page-title">Basis­instellingen</div>
-  <div class="page-sub">Vul dit één keer in. De andere modules gebruiken deze data automatisch.</div>
+  <div class="page-sub">Alleen wat elke maand exact hetzelfde is. Eén keer invullen, nooit meer naar omkijken.</div>
 
-  <div class="slbl">📍 Vaste maandlasten</div>
+  <div class="slbl">🏠 Huisvesting</div>
   <div class="card">
-    <div class="fr"><div class="fl">Huur / pacht<div class="fh">Per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_huur" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Huur<div class="fh">Huur gebouwen en terrein</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_huur" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Gas en licht<div class="fh">Vaste energiekosten per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_energie" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Water<div class="fh">Vast waterverbruik per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_water" placeholder="0" min="0"></div></div>
+  </div>
+
+  <div class="slbl">👥 Personeel</div>
+  <div class="card">
     <div class="fr"><div class="fl">Lonen personeel<div class="fh">Totaal bruto p/maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_lonen" placeholder="0" min="0"></div></div>
     <div class="fr"><div class="fl">Eigen loon<div class="fh">Wat jij jezelf uitbetaalt</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_eigenloon" placeholder="0" min="0"></div></div>
-    <div class="fr"><div class="fl">Energie<div class="fh">Gas + stroom + water</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_energie" placeholder="0" min="0"></div></div>
-    <div class="fr"><div class="fl">Verzekeringen</div><div class="ig"><div class="ip">€</div><input type="number" id="s_verzekering" placeholder="0" min="0"></div></div>
-    <div class="fr"><div class="fl">Abonnementen<div class="fh">Kassa, muziek, boekhouding…</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_abonnementen" placeholder="0" min="0"></div></div>
-    <div class="fr"><div class="fl">Overig vast<div class="fh">Lease, afschrijving, etc.</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_overigvast" placeholder="0" min="0"></div></div>
+  </div>
+
+  <div class="slbl">🏦 Vaste financiële lasten</div>
+  <div class="card">
+    <div class="fr"><div class="fl">Bankkosten<div class="fh">Vast maandbedrag</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_bankkosten" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Telefoon<div class="fh">Vaste telefoonkosten</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_telefoon" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Contributies en abonnementen<div class="fh">Vaste lidmaatschappen p/maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_contributies" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Accountants- en administratiekosten<div class="fh">Vast maandbedrag boekhouder</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_accountant" placeholder="0" min="0"></div></div>
+    <div class="fr"><div class="fl">Verzekeringen<div class="fh">Zakelijke verzekeringen</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_verzekering" placeholder="0" min="0"></div></div>
   </div>
 
   <div class="slbl">📊 Inkoop & variabele kosten</div>
   <div class="card">
     <div class="fr"><div class="fl">Gemiddeld inkooppercentage<div class="fh">Horeca norm: 28–35%</div></div><div class="ig"><div class="ip">%</div><input type="number" id="s_inkoop" placeholder="30" min="0" max="100"></div></div>
     <div class="fr"><div class="fl">Bezorgplatform commissie<div class="fh">Thuisbezorgd, Uber Eats, etc.</div></div><div class="ig"><div class="ip">%</div><input type="number" id="s_bezorg" placeholder="0" min="0" max="100"></div></div>
-    <div class="fr"><div class="fl">Verpakking / wegwerp<div class="fh">Per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_verpakking" placeholder="0" min="0"></div></div>
-    <div class="fr"><div class="fl">Schoonmaak & verbruiksmateriaal<div class="fh">Per maand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="s_schoon" placeholder="0" min="0"></div></div>
   </div>
 
   <div class="slbl">🎯 Doelen & seizoenen</div>
@@ -169,7 +178,7 @@ textarea:focus{border-color:var(--accent)}
 
   <div class="slbl">💾 Data & backup</div>
   <div class="card">
-    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">Exporteer al je data als JSON-bestand voor backup of om over te zetten naar een ander apparaat. Importeer een eerder opgeslagen bestand om verder te gaan.</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.6">Exporteer al je data als JSON-bestand voor backup of om over te zetten naar een ander apparaat.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-g" onclick="exportJSON()">⬇️ Exporteer data</button>
       <button class="btn btn-s" onclick="document.getElementById('json-import-input').click()">⬆️ Importeer data</button>
@@ -201,7 +210,7 @@ textarea:focus{border-color:var(--accent)}
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-s" onclick="document.getElementById('pdf-import-input').click()">📄 Importeer rapportage</button>
-        <input type="file" id="pdf-import-input" accept=".pdf" style="display:none" onchange="importPDF(event)">
+        <input type="file" id="pdf-import-input" accept=".pdf" multiple style="display:none" onchange="importPDF(event)">
         <button class="btn btn-p" onclick="openMonthModal(null)">+ Maand toevoegen</button>
       </div>
     </div>
@@ -305,30 +314,38 @@ textarea:focus{border-color:var(--accent)}
   <div class="slbl">🚀 Deel 1 — De app online zetten (één keer)</div>
 
   <div class="card">
-    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">1</div>Maak een gratis Netlify account</div>
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">1</div>Maak een gratis GitHub account</div>
     <div style="font-size:13px;line-height:1.8;color:var(--text)">
-      Ga op je computer naar <strong>netlify.com</strong> en klik op <em>Sign up</em>.<br>
-      Kies <em>Sign up with email</em> en maak een account aan.<br>
-      <span style="color:var(--muted)">Je hebt alleen een e-mailadres nodig. Gratis, geen creditcard.</span>
+      Ga in Safari naar <strong>github.com</strong> en maak een gratis account aan.<br>
+      Je hebt alleen een e-mailadres nodig.
     </div>
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">2</div>Zet het bestand online</div>
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">2</div>Maak een nieuwe repository aan</div>
     <div style="font-size:13px;line-height:1.8;color:var(--text)">
-      Na inloggen zie je een groot vlak met de tekst <em>"Drag and drop your site folder here"</em>.<br>
-      Sleep het bestand <strong>horeca-manager.html</strong> daar naartoe.<br>
-      Netlify geeft je direct een webadres — zoiets als <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:12px">jouwsite.netlify.app</code><br>
-      <span style="color:var(--muted)">Dit is jouw persoonlijke app-adres. Bewaar het ergens.</span>
+      Tik rechtsboven op het <strong>+</strong> icoontje → <em>New repository</em>.<br>
+      Naam: <strong>horeca</strong> · Zet op <strong>Public</strong> · Vink <strong>Add a README file</strong> aan.<br>
+      Tik op de groene knop <strong>Create repository</strong>.
     </div>
   </div>
 
   <div class="card">
-    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">3</div>App-adres aanpassen (optioneel maar handig)</div>
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">3</div>Upload het bestand</div>
     <div style="font-size:13px;line-height:1.8;color:var(--text)">
-      In Netlify kan je het adres een eigen naam geven.<br>
-      Ga naar <em>Site settings → Change site name</em> en kies iets als <strong>bloom-horeca</strong>.<br>
-      Het adres wordt dan <code style="background:var(--surface2);padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:12px">bloom-horeca.netlify.app</code>
+      Ga eerst naar je <strong>Bestanden-app</strong>, zoek het gedownloade bestand, houd je vinger erop en kies <strong>Naam wijzigen</strong>.<br>
+      Verander de naam naar <strong>index</strong> (de .html blijft er automatisch aan).<br>
+      Terug op GitHub: tik op <strong>Add file → Upload files</strong> → kies het bestand → tik op <strong>Commit changes</strong>.
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><div class="ci" style="background:#e8f0fe;font-size:16px">4</div>GitHub Pages aanzetten</div>
+    <div style="font-size:13px;line-height:1.8;color:var(--text)">
+      Tik op <strong>Settings</strong> (tandwiel) → scroll naar <strong>Pages</strong> in het linkermenu.<br>
+      Bij Branch kies je <strong>main</strong> → tik op <strong>Save</strong>.<br>
+      Na 1–2 minuten staat je app live op:<br>
+      <code style="background:var(--surface2);padding:2px 8px;border-radius:4px;font-family:var(--mono);font-size:12px">https://JOUWGEBRUIKERSNAAM.github.io/horeca/</code>
     </div>
   </div>
 
@@ -380,17 +397,16 @@ textarea:focus{border-color:var(--accent)}
     <div class="card-head"><div class="ci">📅</div>Stap 2 — Maandtracker (elke maand)</div>
     <div style="font-size:13px;line-height:1.8;color:var(--text)">
       Aan het einde van elke maand ga je naar <strong>Maanden</strong>.<br>
-      Klik op <em>+ Maand toevoegen</em>.<br>
-      Vul in: omzet, inkoopkosten, eventuele extra kosten.<br>
-      De app berekent direct je winst en vergelijkt met je doel.<br>
-      <span style="color:var(--muted)">Heb je een rapportage van je boekhouder? Klik op <strong>📄 Importeer rapportage</strong> — dan vult de app alles automatisch in.</span>
+      Heb je een rapportage van je boekhouder? Klik op <strong>📄 Importeer rapportage</strong> — alle velden worden automatisch ingevuld.<br>
+      Geen PDF? Klik op <em>+ Maand toevoegen</em> en vul handmatig in.<br>
+      De app berekent direct je winst en vergelijkt met je seizoensdoel.
     </div>
   </div>
 
   <div class="card">
     <div class="card-head"><div class="ci">🧾</div>Stap 3 — Kostprijscalculator (op aanvraag)</div>
     <div style="font-size:13px;line-height:1.8;color:var(--text)">
-      Wil je weten wat een nieuw gerecht mag kosten? Ga naar <strong>Kostprijs</strong>.<br>
+      Wil je weten wat een nieuw product mag kosten? Ga naar <strong>Kostprijs</strong>.<br>
       Voeg ingrediënten toe — zoveel je wil, via <em>+ Ingrediënt</em> of <em>+ 3 tegelijk</em>.<br>
       Vul hoeveelheid en inkoopprijs per eenheid in.<br>
       De app rekent automatisch de overhead erbij en geeft je een adviesverkoopprijs.<br>
@@ -404,7 +420,7 @@ textarea:focus{border-color:var(--accent)}
       Ga af en toe naar <strong>Setup</strong> en klik op <em>⬇️ Exporteer data</em>.<br>
       Sla het JSON-bestand op in je bestanden of stuur het naar jezelf per e-mail.<br>
       Op een nieuw apparaat klik je op <em>⬆️ Importeer data</em> om alles terug te zetten.<br>
-      <span style="color:var(--muted)">Je hoeft dit niet wekelijks te doen — maar handig na een drukke periode of voordat je een nieuw apparaat neemt.</span>
+      <span style="color:var(--muted)">Handig na een drukke periode of voordat je een nieuw apparaat neemt.</span>
     </div>
   </div>
 
@@ -413,7 +429,7 @@ textarea:focus{border-color:var(--accent)}
     <div style="font-size:13px;line-height:1.9;color:var(--text)">
       <strong>Geen internet nodig</strong> om de app te gebruiken nadat je hem hebt geïnstalleerd.<br>
       <strong>Data verdwijnt nooit vanzelf</strong> — tenzij je bewust browsedata wist op je telefoon.<br>
-      <strong>Update de app</strong> door het nieuwe HTML-bestand op Netlify te zetten (slepen maar).<br>
+      <strong>Update de app</strong> door het nieuwe bestand op GitHub te uploaden — zelfde stappen als de eerste keer.<br>
       <strong>Iets mis?</strong> De app verwijdert nooit automatisch data — je kan altijd een backup terugzetten.
     </div>
   </div>
@@ -443,15 +459,34 @@ textarea:focus{border-color:var(--accent)}
       <div style="display:flex;align-items:flex-end;padding-bottom:2px"><div id="mm-sz-badge"></div></div>
     </div>
 
-    <div class="slbl" style="margin-top:0">Werkelijke omzet & kosten</div>
-    <div class="card" style="margin-bottom:0">
+    <div class="slbl" style="margin-top:0">💶 Omzet & inkoop</div>
+    <div class="card" style="margin-bottom:12px">
       <div class="fr"><div class="fl">Omzet (excl. BTW)</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_omzet" placeholder="0" min="0" oninput="calcMM()"></div></div>
-      <div class="fr"><div class="fl">Inkoopkosten<div class="fh">Alles wat ingekocht is</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_inkoop" placeholder="0" min="0" oninput="calcMM()"></div></div>
-      <div class="fr"><div class="fl">Extra variabele kosten<div class="fh">Verpakking, schoonmaak, onvoorzien</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_extra" placeholder="0" min="0" oninput="calcMM()"></div></div>
-      <div class="fr"><div class="fl">Afwijking vaste lasten<div class="fh">+ of − t.o.v. normaal (bijv. reparatie)</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_afwijk" placeholder="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Inkoopkosten<div class="fh">Kostprijs verkopen</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_inkoop" placeholder="0" min="0" oninput="calcMM()"></div></div>
     </div>
 
-    <div id="mm-result" style="margin-top:12px;display:none">
+    <div class="slbl">🔧 Variabele kosten deze maand</div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="fr"><div class="fl">Belastingen onroerend goed<div class="fh">Gemeentelijke belastingen pand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_belastingen" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Onderhoud gebouwen<div class="fh">Reparaties, onderhoud pand</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_onderhoud_geb" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Kleine aanschaffingen inventaris</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_kleine_inv" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Onderhoud inventaris<div class="fh">Reparatie apparatuur</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_onderhoud_inv" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Auto en transport</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_auto" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Kantoorbenodigdheden</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_kantoor" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Porto en drukwerk</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_porto" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Automatisering<div class="fh">Software, licenties</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_automatisering" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Relatiegeschenken</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_relatiegeschenken" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Reis- en verblijfkosten</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_reiskosten" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Lunchkosten</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_lunch" placeholder="0" min="0" oninput="calcMM()"></div></div>
+      <div class="fr"><div class="fl">Cursussen en opleidingen</div><div class="ig"><div class="ip">€</div><input type="number" id="mm_cursussen" placeholder="0" min="0" oninput="calcMM()"></div></div>
+    </div>
+
+    <div class="slbl">⚠️ Afwijking vaste lasten</div>
+    <div class="card" style="margin-bottom:12px">
+      <div class="fr"><div class="fl">Afwijking op vaste lasten<div class="fh">+ of − t.o.v. normaal — onverwachte kosten of besparingen</div></div><div class="ig"><div class="ip">€</div><input type="number" id="mm_afwijk" placeholder="0" oninput="calcMM()"></div></div>
+    </div>
+
+    <div id="mm-result" style="margin-top:4px;display:none">
       <div class="stats" id="mm-stats"></div>
       <div id="mm-advice"></div>
     </div>
@@ -518,7 +553,7 @@ function closeModal(id){document.getElementById(id).classList.remove('open')}
 document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open')}));
 
 // ─── SETUP ───
-function setupInputs(){return['huur','lonen','eigenloon','energie','verzekering','abonnementen','overigvast','inkoop','bezorg','verpakking','schoon','doel_zomer','doel_winter','jaardoel','bon','dagen']}
+function setupInputs(){return['huur','energie','water','lonen','eigenloon','bankkosten','telefoon','contributies','accountant','verzekering','inkoop','bezorg','doel_zomer','doel_winter','jaardoel','bon','dagen']}
 function saveSetup(){
   setupInputs().forEach(f=>{const el=document.getElementById('s_'+f);if(el)S.setup[f]=parseFloat(el.value)||0});
   save();updateSetupUI();
@@ -528,6 +563,11 @@ function loadSetupFields(){
   if(!S.setup.inkoop){document.getElementById('s_inkoop').value=30}
   if(!S.setup.dagen){document.getElementById('s_dagen').value=5}
   updateSetupUI();
+}
+function vasteLasten(){
+  const s=S.setup;
+  return(s.huur||0)+(s.energie||0)+(s.water||0)+(s.lonen||0)+(s.eigenloon||0)
+    +(s.bankkosten||0)+(s.telefoon||0)+(s.contributies||0)+(s.accountant||0)+(s.verzekering||0);
 }
 function updateSetupUI(){
   const v=vasteLasten(),s=S.setup,ok=v>0;
@@ -562,7 +602,8 @@ function renderTracker(){
   if(yrFilter==='winter')ms=ms.filter(m=>!isZomer(m.maand));
   document.getElementById('no-months').style.display=ms.length?'none':'';
   document.getElementById('months-list').innerHTML=ms.map(m=>{
-    const winst=m.omzet-(m.inkoop||0)-(m.extra||0)-vasteLasten()-(m.afwijk||0);
+    const variabel=MM_VAR_FIELDS.reduce((s,f)=>s+(m['v_'+f]||0),0);
+    const winst=m.omzet-(m.inkoop||0)-variabel-vasteLasten()-(m.afwijk||0);
     let b=m.omzet===0?`<span class="badge b-neu">Geen data</span>`:winst>=0?`<span class="badge b-ok">+${fmt(winst)}</span>`:`<span class="badge b-bad">${fmt(winst)}</span>`;
     return`<div class="month-row" onclick="openMonthModal('${m.id}')">
       <div><div class="mr-name">${MNAMES[m.maand]} ${m.jaar}</div><div class="mr-meta">${isZomer(m.maand)?'☀️ Zomer':'❄️ Winter'}${m.omzet?' · '+fmt(m.omzet)+' omzet':''}</div></div>
@@ -575,8 +616,8 @@ function renderTracker(){
 function renderYearOverview(){
   const ms=S.months,vast=vasteLasten(),s=S.setup;
   const totO=ms.reduce((a,m)=>a+m.omzet,0);
-  const totK=ms.reduce((a,m)=>a+(m.inkoop||0)+(m.extra||0)+(m.afwijk||0),0)+vast*ms.length;
-  const totW=totO-totK;
+  const totVar=ms.reduce((a,m)=>a+(m.inkoop||0)+MM_VAR_FIELDS.reduce((s,f)=>s+(m['v_'+f]||0),0)+(m.afwijk||0),0);
+  const totW=totO-totVar-vast*ms.length;
   const zm=ms.filter(m=>isZomer(m.maand)),wm=ms.filter(m=>!isZomer(m.maand));
   const zO=zm.length?zm.reduce((a,m)=>a+m.omzet,0)/zm.length:0;
   const wO=wm.length?wm.reduce((a,m)=>a+m.omzet,0)/wm.length:0;
@@ -596,6 +637,12 @@ function renderYearOverview(){
 }
 
 // ─── MONTH MODAL ───
+const MM_VAR_FIELDS=['belastingen','onderhoud_geb','kleine_inv','onderhoud_inv','auto','kantoor','porto','automatisering','relatiegeschenken','reiskosten','lunch','cursussen'];
+
+function varKosten(m){
+  return MM_VAR_FIELDS.reduce((s,f)=>s+(m['v_'+f]||0),0);
+}
+
 function openMonthModal(id){
   editMonthId=id;
   const now=new Date();
@@ -605,16 +652,20 @@ function openMonthModal(id){
     document.getElementById('mm_jaar').value=m.jaar;
     document.getElementById('mm_omzet').value=m.omzet||'';
     document.getElementById('mm_inkoop').value=m.inkoop||'';
-    document.getElementById('mm_extra').value=m.extra||'';
     document.getElementById('mm_afwijk').value=m.afwijk||'';
     document.getElementById('mm_notitie').value=m.notitie||'';
+    MM_VAR_FIELDS.forEach(f=>{
+      const el=document.getElementById('mm_'+f);
+      if(el)el.value=m['v_'+f]||'';
+    });
     document.getElementById('mm-title').textContent=MNAMES[m.maand]+' '+m.jaar;
     document.getElementById('mm-del-btn').style.display='';
     document.getElementById('mm-save-btn').textContent='💾 Wijzigingen opslaan';
   }else{
     document.getElementById('mm_maand').value=now.getMonth()+1;
     document.getElementById('mm_jaar').value=now.getFullYear();
-    ['mm_omzet','mm_inkoop','mm_extra','mm_afwijk','mm_notitie'].forEach(id=>document.getElementById(id).value='');
+    ['mm_omzet','mm_inkoop','mm_afwijk','mm_notitie'].forEach(id=>document.getElementById(id).value='');
+    MM_VAR_FIELDS.forEach(f=>{const el=document.getElementById('mm_'+f);if(el)el.value='';});
     document.getElementById('mm-title').textContent='Maand invoeren';
     document.getElementById('mm-del-btn').style.display='none';
     document.getElementById('mm-save-btn').textContent='💾 Maand opslaan';
@@ -628,8 +679,9 @@ function mmSeizoen(){
   calcMM();
 }
 function calcMM(){
-  const omzet=g('mm_omzet'),inkoop=g('mm_inkoop'),extra=g('mm_extra'),afwijk=g('mm_afwijk');
-  const vast=vasteLasten(),totK=vast+inkoop+extra+afwijk,winst=omzet-totK;
+  const omzet=g('mm_omzet'),inkoop=g('mm_inkoop'),afwijk=g('mm_afwijk');
+  const variabel=MM_VAR_FIELDS.reduce((s,f)=>s+(parseFloat(document.getElementById('mm_'+f)?.value)||0),0);
+  const vast=vasteLasten(),totK=vast+inkoop+variabel+afwijk,winst=omzet-totK;
   const wPct=omzet>0?winst/omzet*100:0,iPct=omzet>0?inkoop/omzet*100:0;
   const res=document.getElementById('mm-result');
   if(omzet>0){
@@ -637,21 +689,22 @@ function calcMM(){
     document.getElementById('mm-stats').innerHTML=`
       <div class="sb ${winst>=0?'gn':'rd'}"><div class="sl">Winst</div><div class="sv">${fmt(winst)}</div><div class="ss">${wPct.toFixed(1)}% v/omzet</div></div>
       <div class="sb"><div class="sl">Totale kosten</div><div class="sv">${fmt(totK)}</div></div>
-      <div class="sb"><div class="sl">Vaste lasten</div><div class="sv">${fmt(vast)}</div></div>
-      <div class="sb"><div class="sl">Inkoop %</div><div class="sv">${iPct.toFixed(0)}%</div></div>
+      <div class="sb"><div class="sl">Vast</div><div class="sv">${fmt(vast)}</div></div>
+      <div class="sb"><div class="sl">Variabel</div><div class="sv">${fmt(variabel+inkoop)}</div></div>
     `;
     const s=S.setup,mn=parseInt(document.getElementById('mm_maand').value);
     const doel=isZomer(mn)?s.doel_zomer:s.doel_winter;
     let adv='';
     if(doel&&omzet<doel)adv+=`<div class="advice or"><div class="advice-tag">📉 Onder doelomzet</div><p>Je zat <strong>${fmt(doel-omzet)}</strong> onder je doel van ${fmt(doel)}.</p></div>`;
-    else if(doel&&omzet>=doel)adv+=`<div class="advice gn"><div class="advice-tag">✅ Doelomzet gehaald</div><p><strong>${fmt(omzet-doel)}</strong> boven target! Goed werk.</p></div>`;
+    else if(doel&&omzet>=doel)adv+=`<div class="advice gn"><div class="advice-tag">✅ Doelomzet gehaald</div><p><strong>${fmt(omzet-doel)}</strong> boven target!</p></div>`;
     if(iPct>35)adv+=`<div class="advice"><div class="advice-tag">⚠️ Hoge inkoop</div><p>Inkoopkosten op <strong>${iPct.toFixed(0)}%</strong>. Norm is max 35%.</p></div>`;
     document.getElementById('mm-advice').innerHTML=adv;
   }else res.style.display='none';
 }
 function saveMonth(){
   const maand=parseInt(document.getElementById('mm_maand').value),jaar=parseInt(document.getElementById('mm_jaar').value);
-  const data={maand,jaar,omzet:g('mm_omzet'),inkoop:g('mm_inkoop'),extra:g('mm_extra'),afwijk:g('mm_afwijk'),notitie:gs('mm_notitie')};
+  const data={maand,jaar,omzet:g('mm_omzet'),inkoop:g('mm_inkoop'),afwijk:g('mm_afwijk'),notitie:gs('mm_notitie')};
+  MM_VAR_FIELDS.forEach(f=>data['v_'+f]=parseFloat(document.getElementById('mm_'+f)?.value)||0);
   if(editMonthId){
     const i=S.months.findIndex(m=>m.id===editMonthId);
     if(i>=0)S.months[i]={...S.months[i],...data};
@@ -859,18 +912,217 @@ function importJSON(e){
   e.target.value='';
 }
 
-// ─── PDF IMPORT (boekhouder rapportage) ───
+// ─── PDF IMPORT — Exact Online parser ───
 function importPDF(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=function(ev){
-    // PDF tekst extractie via ingebouwde browser PDF.js is niet beschikbaar
-    // We tonen een modal met instructie + pre-filled modal op basis van bestandsnaam
-    alert('📄 PDF ontvangen: "'+file.name+'"\n\nAutomatisch inlezen van PDF is nog in ontwikkeling.\n\nKlik op OK en vul de maand handmatig in — de maand-invoer wordt nu voor je geopend.');
-    openMonthModal(null);
-  };
-  reader.readAsArrayBuffer(file);
+  const files=Array.from(e.target.files);
+  if(!files.length)return;
+  let processed=0,failed=0;
+  const total=files.length;
+
+  files.forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      const text=extractTextFromPDF(ev.target.result)||'';
+      const raw=parseExactPDF(text,file.name);
+      if(!raw){
+        failed++;
+        alert('Kon "'+file.name+'" niet herkennen als Exact Online rapport.');
+        checkDone();return;
+      }
+
+      // ─ Stap 1: vaste lasten vergelijken en afwijkingen detecteren ─
+      const data=checkEnVerwerkVasteLasten(raw);
+
+      // ─ Stap 2: opslaan ─
+      const ex=S.months.find(m=>m.maand===data.maand&&m.jaar===data.jaar);
+      if(ex){
+        if(!confirm(`${MNAMES[data.maand]} ${data.jaar} bestaat al. Overschrijven met data uit "${file.name}"?`)){checkDone();return;}
+        const i=S.months.findIndex(m=>m.id===ex.id);
+        S.months[i]={...ex,...data};
+      }else{
+        data.id='M'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+        S.months.push(data);
+      }
+      processed++;
+      save();renderTracker();updateSetupUI();
+      checkDone();
+    };
+    reader.readAsText(file,'utf-8');
+  });
   e.target.value='';
+
+  function checkDone(){
+    if(processed+failed===total){
+      if(processed>0)alert(`✅ ${processed} maand${processed>1?'en':''} succesvol ingelezen!`);
+    }
+  }
+}
+
+// ─ Vergelijk vaste lasten met historisch gemiddelde, stel voor om Setup bij te werken ─
+function checkEnVerwerkVasteLasten(data){
+  const s=S.setup;
+  const DREMPEL=5;
+  const STRUCTUREEL_DREMPEL=2; // aantal maanden op rij voor Setup-update voorstel
+
+  // Vaste posten: {label, setupKey, rapportWaarde}
+  const vastePosten=[
+    {label:'Huur', key:'huur', val:data._rawKosten?.huur||0},
+    {label:'Gas en licht', key:'energie', val:data._rawKosten?.energie||0},
+    {label:'Water', key:'water', val:data._rawKosten?.water||0},
+    {label:'Bankkosten', key:'bankkosten', val:data._rawKosten?.bankkosten||0},
+    {label:'Telefoon', key:'telefoon', val:data._rawKosten?.telefoon||0},
+    {label:'Contributies en abonnementen', key:'contributies', val:data._rawKosten?.contributies||0},
+    {label:'Accountant / administratie', key:'accountant', val:data._rawKosten?.accountant||0},
+    {label:'Verzekeringen', key:'verzekering', val:data._rawKosten?.verzekering||0},
+  ];
+
+  let totaalAfwijking=0;
+
+  for(const post of vastePosten){
+    const setupWaarde=s[post.key]||0;
+    const rapportWaarde=post.val;
+
+    // Geen van beide ingevuld — sla over
+    if(setupWaarde===0&&rapportWaarde===0)continue;
+
+    // Setup nog leeg maar rapport heeft waarde — vul Setup automatisch in
+    if(setupWaarde===0&&rapportWaarde>0){
+      if(confirm(`"${post.label}" staat nog niet in je Setup.\nRapport toont: €${fmtBedrag(rapportWaarde)}\n\nWil je Setup hiermee invullen?`)){
+        S.setup[post.key]=rapportWaarde;
+        const el=document.getElementById('s_'+post.key);
+        if(el)el.value=rapportWaarde;
+      }
+      continue;
+    }
+
+    const diff=rapportWaarde-setupWaarde;
+    if(Math.abs(diff)<DREMPEL)continue;
+
+    // Kijk of deze post de laatste maanden ook al afweek (structureel)
+    const aantalAfwijkend=S.months.filter(m=>{
+      const v=m._rawKosten?.[post.key]||0;
+      return v>0&&Math.abs(v-setupWaarde)>=DREMPEL;
+    }).length;
+
+    const isStructureel=aantalAfwijkend>=STRUCTUREEL_DREMPEL;
+    const richting=diff>0?'+':'−';
+
+    if(isStructureel){
+      // Stel voor om Setup bij te werken
+      const gemiddeld=S.months
+        .filter(m=>m._rawKosten?.[post.key]>0)
+        .reduce((a,m,_,arr)=>a+(m._rawKosten[post.key]||0)/arr.length,0);
+
+      const keuze=confirm(
+        `⚠️ Structurele afwijking: ${post.label}\n\n`
+        +`Setup: €${fmtBedrag(setupWaarde)}\n`
+        +`Dit rapport: €${fmtBedrag(rapportWaarde)}\n`
+        +`Gem. laatste maanden: €${fmtBedrag(gemiddeld)}\n\n`
+        +`Deze post wijkt al ${aantalAfwijkend} maanden af.\n`
+        +`Wil je Setup bijwerken naar €${fmtBedrag(rapportWaarde)}?\n\n`
+        +`OK = Setup bijwerken\nAnnuleer = eenmalig boeken als afwijking`
+      );
+      if(keuze){
+        S.setup[post.key]=rapportWaarde;
+        const el=document.getElementById('s_'+post.key);
+        if(el)el.value=rapportWaarde;
+        save();
+      }else{
+        totaalAfwijking+=diff;
+      }
+    }else{
+      // Éénmalige afwijking — vraag of boeken als afwijking
+      const keuze=confirm(
+        `⚠️ Afwijking vaste last: ${post.label}\n\n`
+        +`Setup: €${fmtBedrag(setupWaarde)}\n`
+        +`Dit rapport: €${fmtBedrag(rapportWaarde)}\n`
+        +`Verschil: ${richting}€${fmtBedrag(Math.abs(diff))}\n\n`
+        +`Wil je dit boeken als afwijking op vaste lasten?`
+      );
+      if(keuze)totaalAfwijking+=diff;
+    }
+  }
+
+  if(totaalAfwijking!==0){
+    data.afwijk=Math.round((data.afwijk||0)*100+totaalAfwijking*100)/100;
+  }
+  return data;
+}
+
+function fmtBedrag(n){return(n||0).toFixed(2).replace('.',',');}
+
+function extractTextFromPDF(content){
+  if(typeof content==='string')return content;
+  try{
+    const decoder=new TextDecoder('utf-8',{fatal:false});
+    const text=decoder.decode(content instanceof ArrayBuffer?content:new Uint8Array(content));
+    let out='';
+    const matches=text.matchAll(/BT[\s\S]*?ET/g);
+    for(const m of matches)out+=m[0].replace(/[^\x20-\x7E\n\r]/g,' ')+'\n';
+    out+=text.replace(/[^\x20-\x7E\n\r]/g,' ');
+    return out;
+  }catch(e){return '';}
+}
+
+function parseExactPDF(text,filename){
+  const t=text.replace(/\s+/g,' ');
+
+  function getAmount(code){
+    const patterns=[
+      new RegExp(code+'[^\\d]{0,60}?(\\d{1,3}(?:\\.\\d{3})*,\\d{2})','i'),
+      new RegExp(code+'\\s*-[^\\n]{0,80}?(\\d{1,3}(?:\\.\\d{3})*,\\d{2})','i'),
+    ];
+    for(const re of patterns){const m=t.match(re);if(m)return parseNL(m[1]);}
+    return 0;
+  }
+  function parseNL(s){if(!s)return 0;return parseFloat(s.replace(/\./g,'').replace(',','.'))||0;}
+
+  let maand=0,jaar=new Date().getFullYear();
+  const maandNamen={jan:1,feb:2,mrt:3,mar:3,apr:4,mei:5,jun:6,jul:7,aug:8,sep:9,okt:10,nov:11,dec:12};
+  const fnLower=filename.toLowerCase();
+  for(const[k,v] of Object.entries(maandNamen)){if(fnLower.includes(k)){maand=v;break;}}
+  const fnYear=filename.match(/20\d{2}/);
+  if(fnYear)jaar=parseInt(fnYear[0]);
+  if(!maand){const pm=t.match(/Periode\s+(\d{1,2})\s*-\s*\d/i);if(pm)maand=parseInt(pm[1]);}
+  const cy=t.match(/Boekjaar\s+(20\d{2})/i);if(cy)jaar=parseInt(cy[1]);
+  if(!maand)return null;
+
+  const omzet=(getAmount('8000')||0)+(getAmount('8010')||0);
+  const inkoop=(getAmount('7000')||0)+(getAmount('7010')||0)+(getAmount('7011')||0);
+
+  const rawKosten={
+    huur:getAmount('4110'),belastingen_og:getAmount('4130'),onderhoud_gebouw:getAmount('4140'),
+    energie:getAmount('4170'),water:getAmount('4171'),kleine_inv:getAmount('4220'),
+    onderhoud_inv:getAmount('4221'),auto:getAmount('4420'),kantoor:getAmount('4300'),
+    porto:getAmount('4310'),telefoon:getAmount('4320'),drukwerk:getAmount('4330'),
+    automatisering:getAmount('4340'),relatiegeschenken:getAmount('4515'),
+    reiskosten:getAmount('4530'),lunch:getAmount('4535'),bankkosten:getAmount('4600'),
+    contributies:getAmount('4720'),accountant:getAmount('4730'),cursussen:getAmount('4740'),
+    verzekering:getAmount('4775'),
+  };
+
+  const resultaatMatch=t.match(/Resultaat\s+([\d.]+,\d{2})/i);
+  const resultaatExact=resultaatMatch?parseNL(resultaatMatch[1]):null;
+
+  return{
+    maand,jaar,omzet,inkoop,
+    v_belastingen:rawKosten.belastingen_og,
+    v_onderhoud_geb:rawKosten.onderhoud_gebouw,
+    v_kleine_inv:rawKosten.kleine_inv,
+    v_onderhoud_inv:rawKosten.onderhoud_inv,
+    v_auto:rawKosten.auto,
+    v_kantoor:rawKosten.kantoor,
+    v_porto:(rawKosten.porto||0)+(rawKosten.drukwerk||0),
+    v_automatisering:rawKosten.automatisering,
+    v_relatiegeschenken:rawKosten.relatiegeschenken,
+    v_reiskosten:rawKosten.reiskosten,
+    v_lunch:rawKosten.lunch,
+    v_cursussen:rawKosten.cursussen,
+    afwijk:0,
+    notitie:`Ingelezen uit ${filename}`,
+    resultaatExact,
+    _rawKosten:rawKosten,
+  };
 }
 </script>
 </body>
